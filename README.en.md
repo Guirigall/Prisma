@@ -4,6 +4,8 @@
 
 Prisma is a music visualiser that turns sound into light. It is a single HTML file using WebGL 2 and Web Audio: **open it with a double click**, with no server, no installation and no internet connection. Your music never leaves the browser.
 
+**Try it online:** https://guirigall.github.io/Prisma/ (or download `Prisma.html` and double-click it).
+
 ![Prisma](docs/desktop.png)
 
 ## Getting started
@@ -82,3 +84,7 @@ node tools/browser-check.mjs    # headless Chrome test (PRISMA_CHROME variable)
 | `So-del-sistema.sh` | PipeWire virtual input for Chrome on Linux. |
 
 Prisma is inspired by classic visualisers such as MilkDrop, but every universe is original and it does not load `.milk` files.
+
+## Licence
+
+[MIT](LICENSE) © 2026 Guirigall.

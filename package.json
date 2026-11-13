@@ -2,6 +2,7 @@
   "name": "prisma-audio-visuals",
   "version": "1.5.0",
   "private": true,
+  "license": "MIT",
   "type": "module",
   "scripts": {
     "start": "node tools/open.mjs",

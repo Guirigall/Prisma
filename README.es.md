@@ -4,6 +4,8 @@
 
 Prisma es un visualizador musical que convierte el sonido en luz. Es un único archivo HTML con WebGL 2 y Web Audio: **se abre con doble clic**, sin servidor, sin instalación y sin conexión. La música nunca sale del navegador.
 
+**Pruébalo en línea:** https://guirigall.github.io/Prisma/ (o descarga `Prisma.html` y ábrelo con doble clic).
+
 ![Prisma](docs/desktop.png)
 
 ## Cómo se abre
@@ -82,3 +84,7 @@ node tools/browser-check.mjs    # prueba en Chrome sin interfaz (variable PRISMA
 | `So-del-sistema.sh` | Entrada virtual de PipeWire para Chrome en Linux. |
 
 Prisma se inspira en los visualizadores clásicos como MilkDrop, pero todos los universos son originales y no carga archivos `.milk`.
+
+## Licencia
+
+[MIT](LICENSE) © 2026 Guirigall.
