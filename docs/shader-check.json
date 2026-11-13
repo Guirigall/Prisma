@@ -1,0 +1,41 @@
+{
+  "shaderCompilation": true,
+  "renderedPresets": 13,
+  "feedbackFramesPerPreset": 12,
+  "rgbChecksums": [
+    39678183,
+    13575607,
+    50415864,
+    23632593,
+    14370258,
+    12479347,
+    19525470,
+    19793674,
+    15904083,
+    105048204,
+    13311108,
+    14426731,
+    17989537
+  ],
+  "engine": "OpenGL ES 3 via EGL, not browser",
+  "browserVerified": false,
+  "normalisedSpatialChangeByPreset": [
+    1.1882,
+    1.8421,
+    0.8286,
+    1.592,
+    1.1823,
+    1.9052,
+    0.8458,
+    0.8136,
+    0.2762,
+    0.488,
+    null,
+    0.2947,
+    0.8551
+  ],
+  "harmonographInkPixels": {
+    "impact0": 1796,
+    "impact1.4": 19729
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "browser": "Chrome/157.0.8103.78",
+  "source": "standalone file:// HTML, no module file-access override",
+  "webgl": true,
+  "presets": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12
+  ],
+  "demoRms": 0.27817261525138015,
+  "fileRms": 0.44883802397758066,
+  "filePause": true,
+  "mobileOverflow": false,
+  "help": true,
+  "errors": [],
+  "microphone": "not tested on physical hardware",
+  "liveStreamRms": 0.7178384556808619,
+  "captureTracksReleased": true,
+  "autoplayOverride": false,
+  "tabCapture": "synthetic audio stream tested; actual picker permission not tested",
+  "serviceWorker": "not tested from file://"
+}

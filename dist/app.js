@@ -1,0 +1,90 @@
+import {AudioEngine} from './audio.js';
+import {VisualEngine} from './visual.js';
+import {PRESETS,clamp} from './analysis.js';
+import {t,translatePage,switchLanguage,LANGUAGES,lang,DECIMAL} from './i18n.js';
+translatePage(document);
+const $=s=>document.querySelector(s);
+const defaults={sensitivity:1.8,bassGain:1,midGain:1,highGain:1,rhythm:.7,reactivity:1.4,release:.18,normalise:true,trails:.72,speed:1,hue:0,quality:'auto'};
+const settings={...defaults};
+try{const saved=JSON.parse(localStorage.getItem('prisma-settings-v1'));for(const key of ['sensitivity','bassGain','midGain','highGain','rhythm','reactivity','release','trails','speed','hue'])if(Number.isFinite(saved?.[key])){const input=$('#'+key);settings[key]=clamp(saved[key],+input.min,+input.max)}if(typeof saved?.normalise==='boolean')settings.normalise=saved.normalise;if(['auto','low','high'].includes(saved?.quality))settings.quality=saved.quality}catch{}
+const save=()=>{try{localStorage.setItem('prisma-settings-v1',JSON.stringify(settings))}catch{}};
+let visualDirty=true;
+let playlist=[],track=0,preset=0,visual=null,pausedVisual=matchMedia('(prefers-reduced-motion: reduce)').matches,visualTime=0,last=performance.now(),lastPreset=0,transition={from:0,to:0,blend:1,start:0},operation=0;
+const audio=new AudioEngine(()=>{if(track+1<playlist.length)loadTrack(track+1);else{status(t('Fi de la llista. Pots tornar-la a reproduir.'));updateTransport()}});
+function status(text,error=false){$('#status').textContent=text;$('#status').classList.toggle('error',error)}
+function fail(e){const messages={'NotAllowedError':t('Permís denegat o captura cancel·lada. Pots tornar-ho a provar o obrir música.'),'NotFoundError':t('No s’ha trobat cap micròfon disponible.'),'NotReadableError':t('No es pot llegir el dispositiu. Comprova si una altra aplicació l’està utilitzant.'),'AbortError':t('L’operació s’ha interromput. Torna-ho a provar.'),'SystemAudioMissing':'','InvalidStateError':t('La captura necessita un clic amb Prisma en primer pla. Torna a prémer Àudio d’una pestanya.'),'NotSupportedError':t('Aquest format d’àudio no està admès pel navegador.')};status((e.name==='SystemAudioMissing'?'':messages[e.name])||e.message||t('No s’ha pogut obrir la font d’àudio.'),true);updateTransport()}
+function updateTransport(){const mode=audio.mode,playing=mode==='file'?!audio.element.paused:mode!=='idle';$('#play').textContent=playing?'Ⅱ':'▶';$('#play').setAttribute('aria-label',playing?(mode==='file'?t('Pausa'):t('Atura la font d’àudio')):t('Reprodueix'));$('#sourceTag').textContent=({file:t('MÚSICA LOCAL'),mic:t('MICRÒFON EN DIRECTE'),tab:t('PESTANYA EN DIRECTE'),system:t('SO DEL SISTEMA'),demo:t('DEMO SONORA')})[mode]||t('EXPLORACIÓ VISUAL');$('#microphone').setAttribute('aria-pressed',mode==='mic');$('#tabAudio').setAttribute('aria-pressed',mode==='tab');$('#systemAudio').setAttribute('aria-pressed',mode==='system');$('#demo').setAttribute('aria-pressed',mode==='demo');if(mode==='idle'){$('#trackName').textContent=t('Exploració visual');$('#trackDetail').textContent=t('Cap micròfon ni captura d’àudio actius')}$('#seek').disabled=mode!=='file'||!Number.isFinite(audio.element.duration);}
+function selectPreset(index){visualDirty=true;index=(index+PRESETS.length)%PRESETS.length;if(transition.blend<1)transition.from=transition.blend>.5?transition.to:transition.from;else transition.from=preset;preset=index;transition.to=index;transition.start=visualTime;transition.blend=transition.from===index?1:0;lastPreset=visualTime;$('#sceneIndex').textContent=String(index+1).padStart(2,'0')+' / '+String(PRESETS.length).padStart(2,'0');$('#sceneTitle').textContent=t(PRESETS[index].name);$('#sceneSubtitle').textContent=t(PRESETS[index].subtitle);document.querySelectorAll('.preset').forEach((b,i)=>b.setAttribute('aria-pressed',i===index))}
+PRESETS.forEach((p,i)=>{const button=document.createElement('button');button.type='button';button.className='preset';button.setAttribute('aria-label',t(p.name));button.setAttribute('aria-pressed',i===0);const thumb=document.createElement('span');thumb.className='thumb';thumb.setAttribute('aria-hidden','true');const label=document.createElement('span');label.className='label';label.textContent=t(p.short);button.append(thumb,label);button.onclick=()=>selectPreset(i);$('#presets').append(button)});
+async function loadTrack(index){if(!playlist.length)return;const token=++operation;track=index;try{status(t('Obrint {name}…',{name:playlist[index].name}));await audio.file(playlist[index]);if(token!==operation)return;$('#trackName').textContent=playlist[index].name;$('#trackDetail').textContent=t('Fitxer {n} de {total} · processament local',{n:index+1,total:playlist.length});status(t('La música és al teu navegador. No s’ha pujat cap fitxer.'));updateTransport()}catch(e){if(token===operation)fail(e)}}
+function filesChosen(files){const valid=[...files].filter(f=>f.type.startsWith('audio/')||/\.(mp3|wav|ogg|flac|m4a|aac|opus|aiff)$/i.test(f.name));if(!valid.length){status(t('Tria un fitxer d’àudio: MP3, WAV, OGG, FLAC o M4A.'),true);return}playlist=valid;loadTrack(0)}
+$('#open').onclick=()=>$('#file').click();$('#file').onchange=e=>{filesChosen(e.target.files);e.target.value=''};
+const liveText={mic:[t('Accepta el permís del micròfon…'),t('El món al teu voltant'),t('Micròfon connectat. Parla o posa música; no reproduïm l’entrada pels altaveus.')],tab:[t('Tria una pestanya i marca l’opció de compartir-ne l’àudio…'),t('Àudio de la pestanya compartida'),t('Captura connectada. Atura-la amb el mateix botó o des del navegador.')],system:[t('Buscant l’entrada amb el so del sistema… accepta el permís si te’l demana.'),t('So del sistema'),t('So del sistema connectat. Tot el que soni al portàtil mou Prisma; no el tornem a reproduir.')]};
+for(const [id,kind] of [['microphone','mic'],['tabAudio','tab'],['systemAudio','system']])$('#'+id).onclick=async()=>{
+ if(audio.mode===kind){operation++;audio.cleanup();updateTransport();status(t('Captura desconnectada. El micròfon i les pistes compartides s’han alliberat.'));return}
+ const token=++operation;silentSince=0;silentHint=false;$('#'+id).disabled=true;status(liveText[kind][0]);
+ try{const ready=await audio.live(kind,kind==='mic'?$('#audioInput').value:'');if(!ready||token!==operation)return;$('#trackName').textContent=liveText[kind][1];$('#trackDetail').textContent=(kind==='tab'?'':(audio.capture?.label?audio.capture.label+' · ':''))+t('En directe · sense gravar ni desar àudio');status(liveText[kind][2]);updateTransport();if(kind!=='tab'){await refreshInputs();if(audio.capture?.deviceId&&[...$('#audioInput').options].some(o=>o.value===audio.capture.deviceId))$('#audioInput').value=audio.capture.deviceId}}catch(e){if(token===operation)fail(e)}finally{$('#'+id).disabled=false}
+};
+async function refreshInputs(){
+ if(!navigator.mediaDevices?.enumerateDevices)return;
+ try{const selected=$('#audioInput').value,devices=await navigator.mediaDevices.enumerateDevices();
+ const select=$('#audioInput');select.replaceChildren();const option=document.createElement('option');option.value='';option.textContent=t('Entrada predeterminada');select.append(option);
+ for(const [i,device] of devices.filter(d=>d.kind==='audioinput'&&d.deviceId&&d.deviceId!=='default').entries()){const option=document.createElement('option');option.value=device.deviceId;option.textContent=device.label||t('Entrada {n}',{n:i+1});select.append(option)}
+ select.value=selected;if(select.selectedIndex<0)select.value='';
+ }catch{} 
+}
+$('#audioInput').onchange=async()=>{if(!['mic','system'].includes(audio.mode))return;const token=++operation,kind=audio.mode;try{const ready=await audio.live(kind,$('#audioInput').value);if(ready&&token===operation){status(t('Entrada d’àudio connectada.'));updateTransport()}}catch(e){if(token===operation)fail(e)}};
+navigator.mediaDevices?.addEventListener?.('devicechange',refreshInputs);
+$('#demo').onclick=async()=>{++operation;try{if(audio.mode==='demo'){audio.cleanup();status(t('Demo aturada.'))}else{await audio.demo();$('#trackName').textContent=t('Prisma / Circuit nocturn');$('#trackDetail').textContent=t('Demo sintètica original · 108 BPM · bucle');status(t('Demo generada amb Web Audio: greus, percussió i arpegi.'))}updateTransport()}catch(e){fail(e)}};
+$('#play').onclick=async()=>{try{if(audio.mode==='idle'&&playlist.length)await loadTrack(track);else{await audio.toggle();if(audio.mode==='demo'){$('#trackName').textContent=t('Prisma / Circuit nocturn');$('#trackDetail').textContent=t('Demo sintètica original · 108 BPM')}updateTransport()}}catch(e){fail(e)}};
+audio.onLiveEnd=()=>{operation++;status(t('La font ha deixat de compartir àudio.'));updateTransport()};
+for(const event of ['play','pause','loadedmetadata','ended'])audio.element.addEventListener(event,updateTransport);
+audio.element.addEventListener('error',()=>{if(audio.mode==='file'){audio.cleanup();status(t('No s’ha pogut llegir aquest àudio. Prova un altre fitxer o format.'),true);updateTransport()}});
+$('#volume').oninput=e=>audio.setVolume(+e.target.value);
+$('#seek').oninput=e=>{if(audio.mode==='file'&&Number.isFinite(audio.element.duration))audio.element.currentTime=audio.element.duration*(+e.target.value/1000)};
+function syncControls(){for(const key of ['bassGain','midGain','highGain'])$('#'+key+'Value').textContent=settings[key].toFixed(2).replace('.',DECIMAL)+'×';$('#rhythmValue').textContent=Math.round(settings.rhythm*100)+'%';for(const key of Object.keys(settings)){if(key==='normalise')$('#normalise').checked=settings.normalise;else $('#'+key).value=settings[key]};$('#sensitivityValue').textContent=settings.sensitivity.toFixed(1).replace('.',DECIMAL)+'×';$('#speedValue').textContent=settings.speed.toFixed(1).replace('.',DECIMAL)+'×';$('#trailsValue').textContent=Math.round(settings.trails*100)+'%';$('#hueValue').textContent=settings.hue+'°';$('#reactivityValue').textContent=settings.reactivity.toFixed(1).replace('.',DECIMAL)+'×';$('#releaseValue').textContent=Math.round(settings.release*1000)+' ms'}
+for(const key of ['sensitivity','bassGain','midGain','highGain','rhythm','reactivity','release','trails','speed','hue'])$('#'+key).oninput=e=>{settings[key]=+e.target.value;syncControls();save()};$('#hue').addEventListener('change',()=>{if(settings.hue!==thumbHue){thumbHue=settings.hue;renderThumbnails()}});$('#normalise').onchange=e=>{settings.normalise=e.target.checked;save()};$('#quality').onchange=e=>{settings.quality=e.target.value;visual?.resize(settings.quality);save()};$('#reset').onclick=()=>{Object.assign(settings,defaults);syncControls();visual?.resize(settings.quality);save()};syncControls();
+$('#auto').onchange=()=>lastPreset=visualTime;
+$('#fullscreen').onclick=async()=>{try{if(document.fullscreenElement)await document.exitFullscreen();else if($('#stage').requestFullscreen)await $('#stage').requestFullscreen();else document.body.classList.toggle('zen')}catch{document.body.classList.toggle('zen')}};
+$('#zen').onclick=()=>{document.body.classList.toggle('zen');requestAnimationFrame(()=>visual?.resize(settings.quality))};
+$('#capture').onclick=()=>{if(!visual||visual.lost){status(t('El visual encara no està disponible.'),true);return}$('#visual').toBlob(blob=>{if(!blob)return;const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='Prisma-'+t(PRESETS[preset].short)+'-'+Date.now()+'.png';a.click();setTimeout(()=>URL.revokeObjectURL(url),30000)},'image/png')};
+{const select=$('#language');for(const [code,name] of Object.entries(LANGUAGES)){const o=document.createElement('option');o.value=code;o.textContent=name;select.append(o)}select.value=lang;select.onchange=()=>switchLanguage(select.value)}
+$('#help').onclick=()=>$('#helpDialog').showModal();$('#closeHelp').onclick=()=>$('#helpDialog').close();
+function motion(){pausedVisual=!pausedVisual;$('#motion').textContent=pausedVisual?t('Reprèn el visual'):t('Pausa visual')}$('#motion').onclick=motion;if(pausedVisual)$('#motion').textContent=t('Reprèn el visual');
+addEventListener('keydown',e=>{if(['INPUT','SELECT','TEXTAREA','BUTTON'].includes(e.target.tagName)||e.ctrlKey||e.metaKey||e.altKey)return;if(e.key==='Escape'){document.body.classList.remove('zen');visual?.resize(settings.quality)}if($('#helpDialog').open)return;if(e.code==='Space'){e.preventDefault();$('#play').click()}if(e.key==='ArrowRight')selectPreset(preset+1);if(e.key==='ArrowLeft')selectPreset(preset-1);if(e.key.toLowerCase()==='f')$('#fullscreen').click();if(e.key.toLowerCase()==='h')$('#zen').click()});
+let dragDepth=0;for(const event of ['dragenter','dragover','dragleave','drop'])document.addEventListener(event,e=>{e.preventDefault();if(event==='dragenter')dragDepth++;if(event==='dragleave')dragDepth=Math.max(0,dragDepth-1);if(event==='drop'){dragDepth=0;filesChosen(e.dataTransfer.files)}$('#dropHint').hidden=event==='drop'||dragDepth===0});
+function setupVisual(){try{visual=new VisualEngine($('#visual'));visual.resize(settings.quality);visual.onLost=()=>{status(t('S’ha perdut el context gràfic. Esperant que el navegador el recuperi…'),true)};visual.onRestore=()=>{setupVisual();status(t('Context gràfic recuperat.'))};$('#canvasError').hidden=true}catch(e){$('#canvasError').hidden=false;$('#canvasError').textContent=e.message;status(e.message,true)}}setupVisual();
+// Miniatures reals: cada univers es renderitza uns instants en un llenç petit amb un so sintètic.
+let thumbTimer=0;
+function renderThumbnails(){
+ clearTimeout(thumbTimer);
+ let engine;try{engine=new VisualEngine(document.createElement('canvas'),{size:[192,108]})}catch{return}
+ const wave=new Uint8Array(2048).map((_,i)=>128+70*Math.sin(i*.05)),spectrum=new Uint8Array(1024).map((_,i)=>Math.max(0,220-i*.4-60*Math.abs(Math.sin(i*.03))));
+ const fake={bass:.6,mid:.45,high:.35,rms:.25,pulse:.35},buttons=document.querySelectorAll('.preset .thumb');
+ const draw=i=>{
+  if(i>=PRESETS.length||engine.lost){engine.release();return}
+  engine.clear();const look={...settings,speed:1};
+  for(let f=0;f<110;f++)engine.frame(8+f/12,1/12,fake,look,{from:i,to:i,blend:1},wave,spectrum,48000);
+  try{buttons[i].style.background='#000 url('+engine.canvas.toDataURL('image/jpeg',.85)+') center/cover'}catch{}
+  thumbTimer=setTimeout(()=>draw(i+1),30);
+ };
+ thumbTimer=setTimeout(()=>draw(0),400);
+}
+let thumbHue=settings.hue;renderThumbnails();
+const observer=new ResizeObserver(()=>{visual?.resize(settings.quality);visualDirty=true});observer.observe($('#stage'));addEventListener('fullscreenchange',()=>visual?.resize(settings.quality));
+const spectrum=$('#spectrum'),sctx=spectrum.getContext('2d');let silentSince=0,silentHint=false;let fpsFrames=0,fpsStart=performance.now(),lastUI=0;
+function formatTime(seconds){if(!Number.isFinite(seconds))return '00:00';return Math.floor(seconds/60).toString().padStart(2,'0')+':'+Math.floor(seconds%60).toString().padStart(2,'0')}
+function frame(now){requestAnimationFrame(frame);const elapsed=Math.min((now-last)/1000,.1);last=now;if(document.hidden)return;const a=audio.sample(elapsed,now/1000,settings);
+ if(!pausedVisual){visualTime+=elapsed*settings.speed;transition.blend=clamp((visualTime-transition.start)/4);if($('#auto').checked&&visualTime-lastPreset>+$('#interval').value)selectPreset(preset+1);visual?.frame(visualTime,elapsed,a,settings,transition,audio.wave,audio.freq,audio.context?.sampleRate)}else if(visual&&(visual.frames<1||visualDirty)){transition.blend=1;visual.frame(visualTime,.016,a,settings,transition,audio.wave,audio.freq,audio.context?.sampleRate);visualDirty=false}
+ fpsFrames++;if(now-fpsStart>1200){$('#fps').textContent=Math.round(fpsFrames*1000/(now-fpsStart))+' FPS';fpsFrames=0;fpsStart=now}
+ if(['mic','tab','system'].includes(audio.mode)){
+  if((a.inputRms||0)<.0015){if(!silentSince)silentSince=now;if(now-silentSince>4500&&!silentHint){silentHint=true;status(({tab:t('Hi ha una pista compartida però no arriba so. Comprova que la pestanya reprodueixi música, que no estigui silenciada i que hagis compartit l’àudio.'),system:t('L’entrada del sistema està connectada però ara no sona res al portàtil. Posa música: si continua en silenci, comprova que surti per la sortida predeterminada.')})[audio.mode]||t('El micròfon està connectat però no arriba senyal. Revisa el dispositiu d’entrada i els permisos.'))}}else{silentSince=0;if(silentHint){status(t('Senyal d’àudio recuperat.'));silentHint=false}}
+ }
+ if(now-lastUI<80)return;lastUI=now;for(const [id,v] of [['bassMeter',a.bass],['midMeter',a.mid],['highMeter',a.high]])$('#'+id).style.width=Math.round(v*100)+'%';$('#beat').style.opacity=.2+.8*a.pulse;$('#signal').textContent=audio.mode==='idle'?t('Esperant una font d’àudio'):a.rms>.005?t('Senyal actiu · detecció de pols adaptativa'):t('Font connectada · sense senyal audible');
+ if(audio.mode==='file'){$('#clock').textContent=formatTime(audio.element.currentTime)+' / '+formatTime(audio.element.duration);if(document.activeElement!==$('#seek'))$('#seek').value=audio.element.duration?audio.element.currentTime/audio.element.duration*1000:0}else $('#clock').textContent=audio.mode==='idle'?'00:00 / 00:00':t('EN DIRECTE');
+ sctx.clearRect(0,0,spectrum.width,spectrum.height);const bars=48;for(let i=0;i<bars;i++){const bin=Math.floor((i/bars)**2*(audio.freq?.length||1)*.65);const value=audio.mode!=='idle'?(audio.freq?.[bin]||0)/255:0;sctx.fillStyle=i<12?'#c4f56b':i<28?'#72c7ad':'#6787b0';sctx.fillRect(i*spectrum.width/bars,spectrum.height-value*60,spectrum.width/bars-2,Math.max(1,value*60))}
+}
+requestAnimationFrame(frame);document.addEventListener('visibilitychange',()=>last=performance.now());addEventListener('pagehide',()=>{operation++;audio.cleanup()});
+$('#offline').textContent=t('Versió HTML autònoma: no necessita servidor, instal·lació ni connexió per als visuals i els fitxers locals.');
+// API mínima de diagnòstic per a proves; no conté àudio ni dades persistides.
+globalThis.__prisma={get state(){return {mode:audio.mode,preset,frames:visual?.frames||0,webgl:!!visual&&!visual.lost,pausedVisual,bands:{...audio.bands},transition:{...transition}}},selectPreset};

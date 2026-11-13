@@ -1,0 +1,827 @@
+<!doctype html><html lang="ca"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#0b0d10"><meta name="description" content="Prisma: transforma la música en llum. Visualitzador musical WebGL amb fitxers locals i micròfon."><title>Prisma 1.5 — transforma el so en llum</title><link rel="icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MTIgNTEyIj48cmVjdCB3aWR0aD0iNTEyIiBoZWlnaHQ9IjUxMiIgcng9IjEwNCIgZmlsbD0iIzExMTgxYyIvPjxwYXRoIGQ9Ik0yNTYgOTUgNDMwIDQwM0g4MloiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI2M0ZjU2YiIgc3Ryb2tlLXdpZHRoPSIyMiIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPjxwYXRoIGQ9Im0yNTYgOTUgMjggMzA4TTgyIDQwM2wyMzAtMTI2IDExOCAxMjYiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI2M0ZjU2YiIgc3Ryb2tlLXdpZHRoPSIxMyIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPjwvc3ZnPgo=" type="image/svg+xml"><style>:root{color-scheme:dark;--bg:#0b0d10;--panel:#121519;--line:#272d32;--muted:#858e98;--ink:#edf1ee;--accent:#c4f56b}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.5 Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}button,a,input,select{-webkit-tap-highlight-color:transparent}button,select{font:inherit;color:inherit}button{cursor:pointer;border:1px solid var(--line);background:#191e23;border-radius:8px;padding:10px 15px;transition:background .18s,border-color .18s}button:hover{background:#293139;border-color:#667462}button:disabled{opacity:.4;cursor:wait}button:focus-visible,a:focus-visible,select:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:4px}header{height:86px;padding:0 4.2%;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--line)}.brand{color:#f1f4ef;text-decoration:none;display:flex;align-items:center;gap:11px;font-size:25px;letter-spacing:5px;font-weight:800}.brand svg{width:31px;height:31px;fill:none;stroke:var(--accent);stroke-width:1.4}.brand>span{font-size:8px;font-weight:500;letter-spacing:2px;max-width:100px;margin-left:12px;color:var(--muted);border-left:1px solid #394038;padding-left:18px}.header-right{display:flex;gap:18px;align-items:center}.local{font-size:10px;letter-spacing:1.6px;color:var(--muted)}.local i,.live-tag i{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--accent);margin-right:7px}.outline{background:transparent}.icon-button{width:34px;height:34px;padding:0;border-radius:50%}main{max-width:1740px;margin:auto;padding:36px 4.2% 0}.intro{display:flex;align-items:end;justify-content:space-between;margin-bottom:28px}.eyebrow{font-size:10px;letter-spacing:2.5px;color:var(--accent);margin:0 0 8px;font-weight:600}h1{font-size:clamp(28px,3.1vw,46px);letter-spacing:-1.8px;margin:0;font-weight:550;line-height:1.2}h1 span{color:var(--accent)}.intro>p{font-size:12px;color:var(--muted);margin:0 0 4px;line-height:1.7}.workspace{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:24px}.stage-wrap{min-width:0}.stage{position:relative;background:radial-gradient(ellipse at 50% 60%,#233f6c,#11172b 50%,#080a12 85%);height:clamp(350px,42vw,615px);overflow:hidden;border-radius:12px;border:1px solid #32343b}#visual{width:100%;height:100%;display:block}.stage-top{position:absolute;inset:20px 22px auto;display:flex;justify-content:space-between;align-items:center;pointer-events:none;text-shadow:0 1px 5px #000}.live-tag{background:#05080b90;padding:7px 10px;border:1px solid #ffffff21;border-radius:5px;font-size:9px;letter-spacing:1.5px}#fps{font:10px ui-monospace,monospace;color:#c6d4d3}.stage-caption{position:absolute;bottom:26px;left:27px;pointer-events:none;text-shadow:0 2px 14px #000}.index{font:10px ui-monospace,monospace;letter-spacing:2px;color:#b4cfce}.stage-caption h2{font-size:27px;font-weight:450;letter-spacing:-.6px;margin:5px 0 0}.stage-caption p{font-size:11px;color:#bdd1d2;margin:3px 0}.stage-tools{position:absolute;bottom:26px;right:22px;display:flex;gap:9px}.stage-tools button{width:37px;height:37px;padding:0;background:#10141a90;border-color:#ffffff32;font-size:20px}.transport{display:flex;gap:14px;align-items:center;padding:20px 0 12px}.play{border:0;background:var(--accent);color:#0b1906;width:41px;height:41px;border-radius:50%;padding:0;flex-shrink:0}.play:hover{background:#ddff9f}.track{min-width:0;flex:1}.track strong,.track span{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.track strong{font-size:12px;font-weight:550}.track span{font-size:10px;color:var(--muted);margin-top:3px}#clock{font:10px ui-monospace,monospace;color:var(--muted);white-space:nowrap}.volume{display:flex;align-items:center;gap:6px;width:100px}.volume input{width:78px}.seek{width:100%;display:block;margin:2px 0 20px}.source-actions{display:flex;gap:8px;flex-wrap:wrap}.source-actions button{font-size:11px;padding:10px 13px}.accent{background:var(--accent);border-color:var(--accent);color:#18220e;font-weight:600}.accent:hover{background:#d7ff94}.status{font-size:11px;color:var(--muted);min-height:34px;margin:12px 0 0}.status.error{color:#ffb295}.panel{background:var(--panel);border:1px solid var(--line);padding:19px;border-radius:10px;margin-bottom:14px}.section-title{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}.section-title h2{font-size:13px;font-weight:550;margin:0}.section-title>span{font-size:8px;letter-spacing:1.4px;color:var(--muted)}.presets{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.preset{padding:0;border-radius:7px;background:transparent;border:1px solid transparent;overflow:hidden;position:relative}.preset .thumb{height:54px;display:block;background:radial-gradient(ellipse at 25% 80%,#22bacc99,transparent 45%),conic-gradient(from 45deg,#312459,#112d65,#b94e9b,#124959,#312459)}.preset:nth-child(2) .thumb{background:repeating-radial-gradient(ellipse at center,#182c4a 0 5px,#6d3d7a 6px 8px,#db956e 9px 10px)}.preset:nth-child(3) .thumb{background:conic-gradient(from 20deg at 40% 70%,#b32d60,#171b41,#287c96,#641a63,#c34746,#171b41)}.preset:nth-child(4) .thumb{background:repeating-conic-gradient(from 20deg,#162e30 0deg 15deg,#c6f6a6 16deg 17deg,#20333c 18deg 30deg)}.preset:nth-child(5) .thumb{background:radial-gradient(circle at 35% 30%,#d6cff6 0 2%,transparent 3%),radial-gradient(ellipse at 70% 70%,#6442a0,#0a1224 70%)}.preset:nth-child(6) .thumb{background:repeating-linear-gradient(32deg,#08292d 0 8px,#91efbb 9px 10px,#0f3135 11px 18px)}.preset .label{display:block;text-align:left;font-size:9px;padding:6px 4px;color:#aab3bb}.preset[aria-pressed=true]{border-color:var(--accent)}.preset[aria-pressed=true] .label{color:var(--accent);background:#c4f56b09}.auto-row{display:flex;justify-content:space-between;align-items:center;margin-top:17px;gap:5px}.switch{display:flex;align-items:center;gap:7px;color:#abb4bc;font-size:10px;cursor:pointer}.switch input{position:absolute;opacity:0}.switch>span{width:25px;height:14px;border-radius:12px;background:#394149;position:relative}.switch>span:after{content:"";position:absolute;width:10px;height:10px;left:2px;top:2px;border-radius:50%;background:#a1a9ad}.switch input:checked+span{background:#405525}.switch input:checked+span:after{left:13px;background:var(--accent)}.switch input:focus-visible+span{outline:2px solid var(--accent)}select{background:#191e23;border:1px solid #30383f;border-radius:5px;padding:5px 6px;font-size:10px}.controls>label{display:block;font-size:11px;margin-bottom:17px;color:#b9c0c6}.controls output{float:right;font:10px ui-monospace,monospace;color:#e2e8dd}.controls input{display:block;width:100%;margin:11px 0 0}input[type=range]{appearance:none;height:3px;background:#35413c;border-radius:3px;accent-color:var(--accent);cursor:pointer}input[type=range]::-webkit-slider-thumb{appearance:none;width:10px;height:10px;border-radius:50%;background:var(--accent)}input[type=range]::-moz-range-thumb{width:10px;height:10px;border:0;border-radius:50%;background:var(--accent)}.text-button{border:0;background:none;padding:0;font-size:9px;color:var(--muted)}.quality-row{display:flex;align-items:center;justify-content:space-between;font-size:11px;color:#b9c0c6}.bands{display:flex;gap:12px}.bands>div{flex:1}.bands span{font-size:8px;letter-spacing:1.1px;color:var(--muted)}.bands div div{height:3px;background:#2a3335;margin-top:6px;overflow:hidden}.bands i{display:block;background:var(--accent);height:100%;width:0;transition:width .07s}.beat{color:var(--accent)!important;opacity:.2}.analysis canvas{width:100%;height:44px;margin-top:14px}.analysis p{font-size:9px;color:var(--muted);margin:2px 0 0}footer{border-top:1px solid var(--line);margin-top:25px;padding:20px 0 28px;display:flex;justify-content:space-between;gap:12px;color:#626d77;font-size:9px}footer>span:first-child{letter-spacing:1.5px}footer button{padding:0;background:none;border:0;color:var(--accent);font-size:10px}dialog{max-width:560px;width:calc(100% - 30px);background:#151c22;border:1px solid #38443c;border-radius:15px;color:var(--ink);padding:30px;box-shadow:0 25px 100px #000b}dialog::backdrop{background:#000a;backdrop-filter:blur(5px)}dialog h2{font-size:30px;letter-spacing:-1px}dialog p{font-size:13px;color:#b6c1c8}.close{float:right;background:none;border:0;font-size:25px;padding:0}.muted{color:var(--muted)!important;font-size:11px!important}#canvasError,#dropHint{position:absolute;inset:0;display:grid;place-items:center;text-align:center;padding:40px;background:#101921e8;z-index:4}#canvasError[hidden],#dropHint[hidden]{display:none}.zen main{padding:0;max-width:none}.zen header,.zen .intro,.zen aside,.zen footer,.zen .transport,.zen .source-actions,.zen .status,.zen .seek{display:none}.zen .workspace{display:block}.zen .stage{height:100dvh;border:0;border-radius:0}.zen .stage-caption,.zen .stage-top{opacity:0;transition:opacity .3s}.zen .stage:hover .stage-caption,.zen .stage:hover .stage-top{opacity:1}.stage:fullscreen{width:100vw;height:100vh;border:0;border-radius:0}@media(min-width:1500px){.workspace{grid-template-columns:minmax(0,1fr) 320px}.preset .thumb{height:64px}}@media(max-width:1000px){.workspace{grid-template-columns:minmax(0,1fr) 260px;gap:16px}.panel{padding:15px}.intro>p{display:none}.stage{height:470px}.source-actions button{font-size:10px;padding:9px}.volume{display:none}}@media(max-width:720px){header{height:65px;padding:0 5%}.brand{font-size:21px}.brand>span,.local,.header-right .outline{display:none}.header-right{gap:8px}main{padding:25px 5% 0}.intro{margin-bottom:22px}h1{font-size:32px;letter-spacing:-1.4px}.workspace{display:flex;flex-direction:column;gap:10px}.stage{height:54vh;min-height:300px;max-height:500px}.stage-top{inset:14px 14px auto}.stage-caption{left:18px;bottom:20px}.stage-caption h2{font-size:23px}.stage-tools{right:14px;bottom:19px}.transport{gap:10px;padding-top:16px}.track strong{font-size:11px}.track span{font-size:9px}#clock{font-size:9px}.source-actions{display:grid;grid-template-columns:1fr 1fr}.source-actions button{font-size:11px;padding:12px 4px}.status{min-height:24px}aside{display:grid;grid-template-columns:1fr 1fr;gap:12px}aside>.panel:first-child{grid-column:1/-1}.panel{margin:0}.presets{grid-template-columns:repeat(6,1fr)}.preset .thumb{height:45px}.preset .label{font-size:8px}.auto-row{margin-top:14px}.controls>label{font-size:10px;margin-bottom:16px}.section-title h2{font-size:11px}.section-title{gap:6px}.bands{gap:6px}.bands span{font-size:7px}.quality-row{gap:4px}.quality-row label{font-size:10px}footer{flex-direction:column;margin-top:24px}.analysis canvas{height:80px}}@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+.accent-outline{border-color:var(--accent);color:var(--accent)}.accent-outline[aria-pressed="true"],button[aria-pressed="true"].accent-outline{background:#26331a}code{font:12px ui-monospace,monospace;background:#1b2026;border:1px solid var(--line);border-radius:4px;padding:1px 5px}.switch{position:relative}.switch input{width:1px;height:1px;margin:0;left:0;top:0}.language{background:#191e23;border:1px solid var(--line);border-radius:8px;padding:7px 8px;font-size:12px}</style></head><body>
+<header><a class="brand" href="#" aria-label="Prisma, inici"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M16 3 29 27H3Z"/><path d="m16 3 2 24M3 27l17-9 9 9"/></svg>PRISMA<span>LABORATORI DE LLUM</span></a><div class="header-right"><span class="local"><i></i> HTML AUTÒNOM · 1.5</span><select id="language" class="language" aria-label="Idioma"></select><button id="help" class="icon-button" aria-label="Ajuda">?</button><button id="fullscreen" class="outline">Pantalla completa ↗</button></div></header>
+<main><div class="intro"><div><p class="eyebrow">SO → MOVIMENT → LLUM</p><h1>Escolta amb els ulls<span>.</span></h1></div><p>Un llenç viu que respira amb la teva música.<br>Tria un univers i deixa’t portar.</p></div>
+<div class="workspace"><section class="stage-wrap" aria-label="Visualitzador musical"><div id="stage" class="stage"><canvas id="visual" aria-label="Animació musical abstracta"></canvas><div class="stage-top"><span class="live-tag"><i></i><span id="sourceTag">EXPLORACIÓ VISUAL</span></span><span id="fps">— FPS</span></div><div class="stage-caption"><span class="index" id="sceneIndex">01 / 13</span><h2 id="sceneTitle">Aurora líquida</h2><p id="sceneSubtitle">Cintes de llum en moviment</p></div><div class="stage-tools"><button id="capture" title="Desa una captura PNG" aria-label="Desa una captura PNG">⌑</button><button id="zen" title="Oculta els controls, tecla H" aria-label="Oculta els controls">⤢</button></div><div id="canvasError" role="alert" hidden></div><div id="dropHint" hidden>Deixa anar la música aquí</div></div>
+<div class="transport"><button id="play" class="play" aria-label="Reprodueix">▶</button><div class="track"><strong id="trackName">El teu pròxim viatge comença aquí</strong><span id="trackDetail">Obre un fitxer, escolta el so del sistema o prova la demo</span></div><span id="clock">00:00 / 00:00</span><label class="volume"><span aria-hidden="true">◖</span><input id="volume" aria-label="Volum de sortida" type="range" min="0" max="1" step=".01" value=".65"></label></div><input id="seek" class="seek" aria-label="Posició de reproducció" type="range" min="0" max="1000" value="0" disabled>
+<div class="source-actions"><button id="open" class="accent">＋ Obre música</button><button id="systemAudio" class="accent-outline">♫ So del sistema</button><button id="microphone">◉ Micròfon</button><button id="tabAudio">↗ Àudio d’una pestanya</button><button id="demo">▷ Demo sonora</button><input id="file" type="file" accept="audio/*,.mp3,.wav,.ogg,.flac,.m4a" multiple hidden></div><label>Entrada d’àudio <select id="audioInput" aria-label="Entrada d’àudio"><option value="">Entrada predeterminada</option></select></label><p class="muted">«So del sistema» escolta tot el que sona al portàtil. A Linux amb Chrome cal executar una sola vegada <code>./So-del-sistema.sh</code>.</p><p id="status" class="status" role="status" aria-live="polite">Explora els visuals sense so, o connecta una font d’àudio.</p>
+</section>
+<aside><section class="panel"><div class="section-title"><h2>Universos</h2><span>13 UNIVERSOS</span></div><div id="presets" class="presets"></div><div class="auto-row"><label class="switch"><input id="auto" type="checkbox" checked><span></span>Viatge automàtic</label><select id="interval" aria-label="Temps entre universos"><option value="20">20 s</option><option value="40" selected>40 s</option><option value="60">60 s</option></select></div></section>
+<section class="panel controls"><div class="section-title"><h2>Al teu ritme</h2><button id="reset" class="text-button">Restableix</button></div><label>Sensibilitat d’àudio <output id="sensitivityValue">1,8×</output><input id="sensitivity" type="range" min=".2" max="8" step=".1" value="1.8"></label><label>Greus <output id="bassGainValue"></output><input id="bassGain" type="range" min="0" max="2" step=".05" value="1"></label><label>Mitjos <output id="midGainValue"></output><input id="midGain" type="range" min="0" max="2" step=".05" value="1"></label><label>Aguts <output id="highGainValue"></output><input id="highGain" type="range" min="0" max="2" step=".05" value="1"></label><label>Destaca els atacs <output id="rhythmValue"></output><input id="rhythm" type="range" min="0" max="1" step=".05" value="0.7"></label><label>Impacte rítmic <output id="reactivityValue">1,4×</output><input id="reactivity" type="range" min="0" max="3" step=".1" value="1.4"></label><label>Decaïment <output id="releaseValue">180 ms</output><input id="release" type="range" min=".08" max=".8" step=".02" value=".18"></label><div class="auto-row"><label class="switch"><input id="normalise" type="checkbox" checked><span></span>Normalitza el nivell</label></div><label>Persistència <output id="trailsValue">72%</output><input id="trails" type="range" min="0" max=".95" step=".01" value=".72"></label><label>Velocitat <output id="speedValue">1,0×</output><input id="speed" type="range" min=".2" max="2" step=".05" value="1"></label><label>Color <output id="hueValue">0°</output><input id="hue" type="range" min="0" max="360" value="0"></label><div class="quality-row"><label for="quality">Qualitat</label><select id="quality"><option value="auto">Automàtica</option><option value="low">Lleugera</option><option value="high">Alta</option></select></div></section>
+<section class="panel analysis"><div class="section-title"><h2>El pols del so</h2><span id="beat" class="beat">●</span></div><div class="bands"><div><span>GREUS</span><div><i id="bassMeter"></i></div></div><div><span>MITJOS</span><div><i id="midMeter"></i></div></div><div><span>AGUTS</span><div><i id="highMeter"></i></div></div></div><canvas id="spectrum" width="320" height="65" aria-label="Espectre de freqüències"></canvas><p id="signal">Esperant una font d’àudio</p></section></aside></div>
+<footer><span>FET PER PERDRE LA NOCIÓ DEL TEMPS.</span><span>Sense compte. Sense pujar fitxers. Només tu i el so.</span></footer></main>
+<dialog id="helpDialog"><button id="closeHelp" class="close" aria-label="Tanca l’ajuda">×</button><p class="eyebrow">PRISMA / GUIA RÀPIDA</p><h2>Dona forma al so.</h2><p><b>Fitxers:</b> obre o arrossega música. Tot es processa en aquest navegador; no s’envia a cap servidor. Diversos fitxers es reprodueixen en ordre.</p><p><b>Micròfon:</b> accepta el permís del navegador. No el reproduïm pels altaveus, per evitar acoblaments. Prem el mateix botó per desconnectar-lo.</p><p><b>So del sistema:</b> escolta tot el que surt pels altaveus (Spotify, YouTube, un reproductor…). Prisma busca una entrada que porti aquesta sortida: «Prisma · so del sistema», un «Monitor of…» (Firefox els mostra) o «Stereo Mix» a Windows. Chrome a Linux amaga els monitors: executa una vegada <code>./So-del-sistema.sh</code> a la carpeta de Prisma i queda creada l’entrada virtual, també després de reiniciar (<code>./So-del-sistema.sh desactiva</code> la treu). No reproduïm aquesta entrada pels altaveus, i no cal cancel·lació d’eco.</p><p><b>Entrada d’àudio:</b> el selector mostra les entrades que ofereix el navegador després de donar permís. Pots triar-hi a mà qualsevol entrada.</p><p><b>Filtres visuals:</b> Greus, Mitjos i Aguts ajusten la influència de cada banda sense canviar el so. «Destaca els atacs» redueix el pes del so sostingut per recuperar el moviment dels cops.</p><p><b>Pestanya:</b> només per a una pestanya concreta. Firefox no admet l’àudio de pestanyes amb aquesta API; fes servir «So del sistema». Amb Chrome/Edge, tria «Pestanya de Chrome/Edge», selecciona la pestanya que reprodueix música i activa «Comparteix l’àudio». Compartir la finestra sencera del navegador pot aportar només vídeo, sobretot a Linux. Si no arriba cap pista de so, Prisma ho explicarà i alliberarà la captura.</p><p><b>Demo sonora:</b> una peça sintètica generada localment per provar la resposta real als greus i al ritme.</p><p><b>Dreceres:</b> espai, reproducció/pausa; ←/→, univers; F, pantalla completa; H, amaga controls; Esc, recupera controls.</p><p>Prisma està inspirat en els visualitzadors clàssics. Els presets són originals i no carrega fitxers .milk o .milk2. La captura PNG desa només el visual.</p><p class="muted">Aquest HTML s’obre directament amb doble clic, sense servidor. El micròfon i la captura depenen dels permisos i del suport del navegador per a fitxers locals. No es pot forçar una captura que el navegador no ofereix. Els visuals poden contenir moviment i canvis de llum; pots pausar-los amb «Pausa visual», aquí mateix.</p><button id="motion" class="outline">Pausa visual</button><p id="offline" class="muted"></p></dialog>
+<script>
+(()=>{
+"use strict";
+// Idiomes de Prisma: català (text de referència), castellà i anglès.
+// El text català és la clau: t('Text en català') retorna la traducció de l'idioma actiu.
+// L'idioma es tria amb ?lang=ca|es|en, la preferència desada o l'idioma del navegador.
+const TEXTS=[
+ // Capçalera, portada i escenari
+ ['Prisma: transforma la música en llum. Visualitzador musical WebGL amb fitxers locals i micròfon.','Prisma: transforma la música en luz. Visualizador musical WebGL con archivos locales y micrófono.','Prisma: turns music into light. WebGL music visualiser with local files and microphone.'],
+ ['Prisma 1.5 — transforma el so en llum','Prisma 1.5 — transforma el sonido en luz','Prisma 1.5 — turns sound into light'],
+ ['Prisma, inici','Prisma, inicio','Prisma, home'],
+ ['LABORATORI DE LLUM','LABORATORIO DE LUZ','LIGHT LABORATORY'],
+ ['HTML AUTÒNOM · 1.5','HTML AUTÓNOMO · 1.5','STANDALONE HTML · 1.5'],
+ ['Idioma','Idioma','Language'],
+ ['Ajuda','Ayuda','Help'],
+ ['Pantalla completa ↗','Pantalla completa ↗','Full screen ↗'],
+ ['SO → MOVIMENT → LLUM','SONIDO → MOVIMIENTO → LUZ','SOUND → MOTION → LIGHT'],
+ ['Escolta amb els ulls','Escucha con los ojos','Listen with your eyes'],
+ ['Un llenç viu que respira amb la teva música.','Un lienzo vivo que respira con tu música.','A living canvas that breathes with your music.'],
+ ['Tria un univers i deixa’t portar.','Elige un universo y déjate llevar.','Pick a universe and let it carry you.'],
+ ['Visualitzador musical','Visualizador musical','Music visualiser'],
+ ['Animació musical abstracta','Animación musical abstracta','Abstract music animation'],
+ ['EXPLORACIÓ VISUAL','EXPLORACIÓN VISUAL','VISUAL EXPLORATION'],
+ ['Desa una captura PNG','Guarda una captura PNG','Save a PNG snapshot'],
+ ['Oculta els controls, tecla H','Oculta los controles, tecla H','Hide the controls, key H'],
+ ['Oculta els controls','Oculta los controles','Hide the controls'],
+ ['Deixa anar la música aquí','Suelta la música aquí','Drop your music here'],
+ ['Reprodueix','Reproduce','Play'],
+ ['El teu pròxim viatge comença aquí','Tu próximo viaje empieza aquí','Your next journey starts here'],
+ ['Obre un fitxer, escolta el so del sistema o prova la demo','Abre un archivo, escucha el sonido del sistema o prueba la demo','Open a file, listen to the system sound or try the demo'],
+ ['Volum de sortida','Volumen de salida','Output volume'],
+ ['Posició de reproducció','Posición de reproducción','Playback position'],
+ ['＋ Obre música','＋ Abre música','＋ Open music'],
+ ['♫ So del sistema','♫ Sonido del sistema','♫ System sound'],
+ ['◉ Micròfon','◉ Micrófono','◉ Microphone'],
+ ['↗ Àudio d’una pestanya','↗ Audio de una pestaña','↗ Tab audio'],
+ ['▷ Demo sonora','▷ Demo sonora','▷ Sound demo'],
+ ['Entrada d’àudio','Entrada de audio','Audio input'],
+ ['Entrada predeterminada','Entrada predeterminada','Default input'],
+ ['«So del sistema» escolta tot el que sona al portàtil. A Linux amb Chrome cal executar una sola vegada','«Sonido del sistema» escucha todo lo que suena en el ordenador. En Linux con Chrome hay que ejecutar una sola vez','“System sound” listens to everything playing on the computer. On Linux with Chrome, run this once:'],
+ ['Explora els visuals sense so, o connecta una font d’àudio.','Explora los visuales sin sonido, o conecta una fuente de audio.','Explore the visuals in silence, or connect an audio source.'],
+ // Panells
+ ['Universos','Universos','Universes'],
+ ['13 UNIVERSOS','13 UNIVERSOS','13 UNIVERSES'],
+ ['Viatge automàtic','Viaje automático','Auto journey'],
+ ['Temps entre universos','Tiempo entre universos','Time between universes'],
+ ['Al teu ritme','A tu ritmo','At your pace'],
+ ['Restableix','Restablece','Reset'],
+ ['Sensibilitat d’àudio','Sensibilidad de audio','Audio sensitivity'],
+ ['Greus','Graves','Bass'],
+ ['Mitjos','Medios','Mids'],
+ ['Aguts','Agudos','Highs'],
+ ['Destaca els atacs','Destaca los ataques','Emphasise attacks'],
+ ['Impacte rítmic','Impacto rítmico','Rhythmic impact'],
+ ['Decaïment','Decaimiento','Release'],
+ ['Normalitza el nivell','Normaliza el nivel','Normalise level'],
+ ['Persistència','Persistencia','Persistence'],
+ ['Velocitat','Velocidad','Speed'],
+ ['Color','Color','Colour'],
+ ['Qualitat','Calidad','Quality'],
+ ['Automàtica','Automática','Automatic'],
+ ['Lleugera','Ligera','Light'],
+ ['Alta','Alta','High'],
+ ['El pols del so','El pulso del sonido','The pulse of sound'],
+ ['GREUS','GRAVES','BASS'],
+ ['MITJOS','MEDIOS','MIDS'],
+ ['AGUTS','AGUDOS','HIGHS'],
+ ['Espectre de freqüències','Espectro de frecuencias','Frequency spectrum'],
+ ['Esperant una font d’àudio','Esperando una fuente de audio','Waiting for an audio source'],
+ ['FET PER PERDRE LA NOCIÓ DEL TEMPS.','HECHO PARA PERDER LA NOCIÓN DEL TIEMPO.','MADE FOR LOSING TRACK OF TIME.'],
+ ['Sense compte. Sense pujar fitxers. Només tu i el so.','Sin cuenta. Sin subir archivos. Solo tú y el sonido.','No account. No uploads. Just you and the sound.'],
+ // Ajuda
+ ['Tanca l’ajuda','Cierra la ayuda','Close help'],
+ ['PRISMA / GUIA RÀPIDA','PRISMA / GUÍA RÁPIDA','PRISMA / QUICK GUIDE'],
+ ['Dona forma al so.','Dale forma al sonido.','Give shape to sound.'],
+ ['Fitxers:','Archivos:','Files:'],
+ ['obre o arrossega música. Tot es processa en aquest navegador; no s’envia a cap servidor. Diversos fitxers es reprodueixen en ordre.','abre o arrastra música. Todo se procesa en este navegador; no se envía a ningún servidor. Varios archivos se reproducen en orden.','open or drag in music. Everything is processed in this browser; nothing is sent to any server. Several files play in order.'],
+ ['Micròfon:','Micrófono:','Microphone:'],
+ ['accepta el permís del navegador. No el reproduïm pels altaveus, per evitar acoblaments. Prem el mateix botó per desconnectar-lo.','acepta el permiso del navegador. No lo reproducimos por los altavoces, para evitar acoples. Pulsa el mismo botón para desconectarlo.','accept the browser permission. It is not played through the speakers, to avoid feedback. Press the same button to disconnect it.'],
+ ['So del sistema:','Sonido del sistema:','System sound:'],
+ ['escolta tot el que surt pels altaveus (Spotify, YouTube, un reproductor…). Prisma busca una entrada que porti aquesta sortida: «Prisma · so del sistema», un «Monitor of…» (Firefox els mostra) o «Stereo Mix» a Windows. Chrome a Linux amaga els monitors: executa una vegada','escucha todo lo que sale por los altavoces (Spotify, YouTube, un reproductor…). Prisma busca una entrada que lleve esa salida: «Prisma · so del sistema», un «Monitor of…» (Firefox los muestra) o «Stereo Mix» en Windows. Chrome en Linux oculta los monitores: ejecuta una vez','listens to everything coming out of the speakers (Spotify, YouTube, a player…). Prisma looks for an input that carries that output: “Prisma · so del sistema”, a “Monitor of…” (Firefox shows them) or “Stereo Mix” on Windows. Chrome on Linux hides monitors: run once'],
+ ['a la carpeta de Prisma i queda creada l’entrada virtual, també després de reiniciar (','en la carpeta de Prisma y queda creada la entrada virtual, también después de reiniciar (','in the Prisma folder and the virtual input is created, and kept after rebooting ('],
+ ['la treu). No reproduïm aquesta entrada pels altaveus, i no cal cancel·lació d’eco.','la quita). No reproducimos esta entrada por los altavoces, y no hace falta cancelación de eco.','removes it). This input is not played through the speakers, and no echo cancellation is needed.'],
+ ['Entrada d’àudio:','Entrada de audio:','Audio input:'],
+ ['el selector mostra les entrades que ofereix el navegador després de donar permís. Pots triar-hi a mà qualsevol entrada.','el selector muestra las entradas que ofrece el navegador tras dar permiso. Puedes elegir a mano cualquier entrada.','the selector lists the inputs the browser offers once permission is granted. You can pick any input by hand.'],
+ ['Filtres visuals:','Filtros visuales:','Visual filters:'],
+ ['Greus, Mitjos i Aguts ajusten la influència de cada banda sense canviar el so. «Destaca els atacs» redueix el pes del so sostingut per recuperar el moviment dels cops.','Graves, Medios y Agudos ajustan la influencia de cada banda sin cambiar el sonido. «Destaca los ataques» reduce el peso del sonido sostenido para recuperar el movimiento de los golpes.','Bass, Mids and Highs set how much each band drives the visuals without changing the sound. “Emphasise attacks” lowers the weight of sustained sound so the beats move the image again.'],
+ ['Pestanya:','Pestaña:','Tab:'],
+ ['només per a una pestanya concreta. Firefox no admet l’àudio de pestanyes amb aquesta API; fes servir «So del sistema». Amb Chrome/Edge, tria «Pestanya de Chrome/Edge», selecciona la pestanya que reprodueix música i activa «Comparteix l’àudio». Compartir la finestra sencera del navegador pot aportar només vídeo, sobretot a Linux. Si no arriba cap pista de so, Prisma ho explicarà i alliberarà la captura.','solo para una pestaña concreta. Firefox no admite el audio de pestañas con esta API; usa «Sonido del sistema». Con Chrome/Edge, elige «Pestaña de Chrome/Edge», selecciona la pestaña que reproduce música y activa «Compartir audio». Compartir la ventana entera del navegador puede aportar solo vídeo, sobre todo en Linux. Si no llega ninguna pista de sonido, Prisma lo explicará y liberará la captura.','for one specific tab only. Firefox does not support tab audio with this API; use “System sound”. With Chrome/Edge, choose “Chrome/Edge tab”, select the tab playing music and enable “Share audio”. Sharing the whole browser window may only give video, especially on Linux. If no audio track arrives, Prisma will say so and release the capture.'],
+ ['Demo sonora:','Demo sonora:','Sound demo:'],
+ ['una peça sintètica generada localment per provar la resposta real als greus i al ritme.','una pieza sintética generada localmente para probar la respuesta real a los graves y al ritmo.','a synthetic piece generated locally to try the real response to bass and rhythm.'],
+ ['Dreceres:','Atajos:','Shortcuts:'],
+ ['espai, reproducció/pausa; ←/→, univers; F, pantalla completa; H, amaga controls; Esc, recupera controls.','espacio, reproducción/pausa; ←/→, universo; F, pantalla completa; H, oculta controles; Esc, recupera controles.','space, play/pause; ←/→, universe; F, full screen; H, hide controls; Esc, show controls.'],
+ ['Prisma està inspirat en els visualitzadors clàssics. Els presets són originals i no carrega fitxers .milk o .milk2. La captura PNG desa només el visual.','Prisma está inspirado en los visualizadores clásicos. Los presets son originales y no carga archivos .milk o .milk2. La captura PNG guarda solo el visual.','Prisma is inspired by classic visualisers. The presets are original and it does not load .milk or .milk2 files. The PNG snapshot saves only the visual.'],
+ ['Aquest HTML s’obre directament amb doble clic, sense servidor. El micròfon i la captura depenen dels permisos i del suport del navegador per a fitxers locals. No es pot forçar una captura que el navegador no ofereix. Els visuals poden contenir moviment i canvis de llum; pots pausar-los amb «Pausa visual», aquí mateix.','Este HTML se abre directamente con doble clic, sin servidor. El micrófono y la captura dependen de los permisos y del soporte del navegador para archivos locales. No se puede forzar una captura que el navegador no ofrece. Los visuales pueden contener movimiento y cambios de luz; puedes pausarlos con «Pausa visual», aquí mismo.','This HTML opens directly with a double click, with no server. The microphone and capture depend on browser permissions and support for local files. A capture the browser does not offer cannot be forced. The visuals may contain motion and flashing light; you can pause them with “Pause visuals”, right here.'],
+ ['Pausa visual','Pausa visual','Pause visuals'],
+ ['Reprèn el visual','Reanuda el visual','Resume visuals'],
+ // Missatges de l'aplicació
+ ['Fi de la llista. Pots tornar-la a reproduir.','Fin de la lista. Puedes volver a reproducirla.','End of the playlist. You can play it again.'],
+ ['Permís denegat o captura cancel·lada. Pots tornar-ho a provar o obrir música.','Permiso denegado o captura cancelada. Puedes volver a intentarlo o abrir música.','Permission denied or capture cancelled. You can try again or open music.'],
+ ['No s’ha trobat cap micròfon disponible.','No se ha encontrado ningún micrófono disponible.','No microphone was found.'],
+ ['No es pot llegir el dispositiu. Comprova si una altra aplicació l’està utilitzant.','No se puede leer el dispositivo. Comprueba si otra aplicación lo está usando.','The device cannot be read. Check whether another application is using it.'],
+ ['L’operació s’ha interromput. Torna-ho a provar.','La operación se ha interrumpido. Vuelve a intentarlo.','The operation was interrupted. Please try again.'],
+ ['La captura necessita un clic amb Prisma en primer pla. Torna a prémer Àudio d’una pestanya.','La captura necesita un clic con Prisma en primer plano. Vuelve a pulsar Audio de una pestaña.','Capture needs a click with Prisma in the foreground. Press Tab audio again.'],
+ ['Aquest format d’àudio no està admès pel navegador.','Este formato de audio no lo admite el navegador.','This audio format is not supported by the browser.'],
+ ['No s’ha pogut obrir la font d’àudio.','No se ha podido abrir la fuente de audio.','The audio source could not be opened.'],
+ ['Atura la font d’àudio','Detén la fuente de audio','Stop the audio source'],
+ ['Pausa','Pausa','Pause'],
+ ['MÚSICA LOCAL','MÚSICA LOCAL','LOCAL MUSIC'],
+ ['MICRÒFON EN DIRECTE','MICRÓFONO EN DIRECTO','LIVE MICROPHONE'],
+ ['PESTANYA EN DIRECTE','PESTAÑA EN DIRECTO','LIVE TAB'],
+ ['SO DEL SISTEMA','SONIDO DEL SISTEMA','SYSTEM SOUND'],
+ ['DEMO SONORA','DEMO SONORA','SOUND DEMO'],
+ ['Exploració visual','Exploración visual','Visual exploration'],
+ ['Cap micròfon ni captura d’àudio actius','Ningún micrófono ni captura de audio activos','No microphone or audio capture active'],
+ ['Obrint {name}…','Abriendo {name}…','Opening {name}…'],
+ ['Fitxer {n} de {total} · processament local','Archivo {n} de {total} · procesamiento local','File {n} of {total} · processed locally'],
+ ['La música és al teu navegador. No s’ha pujat cap fitxer.','La música está en tu navegador. No se ha subido ningún archivo.','The music stays in your browser. No file has been uploaded.'],
+ ['Tria un fitxer d’àudio: MP3, WAV, OGG, FLAC o M4A.','Elige un archivo de audio: MP3, WAV, OGG, FLAC o M4A.','Choose an audio file: MP3, WAV, OGG, FLAC or M4A.'],
+ ['Accepta el permís del micròfon…','Acepta el permiso del micrófono…','Accept the microphone permission…'],
+ ['El món al teu voltant','El mundo a tu alrededor','The world around you'],
+ ['Micròfon connectat. Parla o posa música; no reproduïm l’entrada pels altaveus.','Micrófono conectado. Habla o pon música; no reproducimos la entrada por los altavoces.','Microphone connected. Talk or play music; the input is not played through the speakers.'],
+ ['Tria una pestanya i marca l’opció de compartir-ne l’àudio…','Elige una pestaña y marca la opción de compartir su audio…','Choose a tab and tick the option to share its audio…'],
+ ['Àudio de la pestanya compartida','Audio de la pestaña compartida','Shared tab audio'],
+ ['Captura connectada. Atura-la amb el mateix botó o des del navegador.','Captura conectada. Detenla con el mismo botón o desde el navegador.','Capture connected. Stop it with the same button or from the browser.'],
+ ['Buscant l’entrada amb el so del sistema… accepta el permís si te’l demana.','Buscando la entrada con el sonido del sistema… acepta el permiso si te lo pide.','Looking for the input carrying the system sound… accept the permission if asked.'],
+ ['So del sistema','Sonido del sistema','System sound'],
+ ['So del sistema connectat. Tot el que soni al portàtil mou Prisma; no el tornem a reproduir.','Sonido del sistema conectado. Todo lo que suene en el ordenador mueve Prisma; no lo volvemos a reproducir.','System sound connected. Everything playing on the computer moves Prisma; it is not played again.'],
+ ['Captura desconnectada. El micròfon i les pistes compartides s’han alliberat.','Captura desconectada. El micrófono y las pistas compartidas se han liberado.','Capture disconnected. The microphone and shared tracks have been released.'],
+ ['En directe · sense gravar ni desar àudio','En directo · sin grabar ni guardar audio','Live · nothing is recorded or saved'],
+ ['Entrada {n}','Entrada {n}','Input {n}'],
+ ['Entrada d’àudio connectada.','Entrada de audio conectada.','Audio input connected.'],
+ ['Demo aturada.','Demo detenida.','Demo stopped.'],
+ ['Prisma / Circuit nocturn','Prisma / Circuito nocturno','Prisma / Night circuit'],
+ ['Demo sintètica original · 108 BPM · bucle','Demo sintética original · 108 BPM · bucle','Original synthetic demo · 108 BPM · loop'],
+ ['Demo sintètica original · 108 BPM','Demo sintética original · 108 BPM','Original synthetic demo · 108 BPM'],
+ ['Demo generada amb Web Audio: greus, percussió i arpegi.','Demo generada con Web Audio: graves, percusión y arpegio.','Demo generated with Web Audio: bass, percussion and arpeggio.'],
+ ['La font ha deixat de compartir àudio.','La fuente ha dejado de compartir audio.','The source stopped sharing audio.'],
+ ['No s’ha pogut llegir aquest àudio. Prova un altre fitxer o format.','No se ha podido leer este audio. Prueba otro archivo o formato.','This audio could not be read. Try another file or format.'],
+ ['El visual encara no està disponible.','El visual aún no está disponible.','The visual is not available yet.'],
+ ['S’ha perdut el context gràfic. Esperant que el navegador el recuperi…','Se ha perdido el contexto gráfico. Esperando a que el navegador lo recupere…','The graphics context was lost. Waiting for the browser to restore it…'],
+ ['Context gràfic recuperat.','Contexto gráfico recuperado.','Graphics context restored.'],
+ ['Hi ha una pista compartida però no arriba so. Comprova que la pestanya reprodueixi música, que no estigui silenciada i que hagis compartit l’àudio.','Hay una pista compartida pero no llega sonido. Comprueba que la pestaña reproduzca música, que no esté silenciada y que hayas compartido el audio.','A track is shared but no sound arrives. Check that the tab is playing music, is not muted and that you shared its audio.'],
+ ['L’entrada del sistema està connectada però ara no sona res al portàtil. Posa música: si continua en silenci, comprova que surti per la sortida predeterminada.','La entrada del sistema está conectada pero ahora no suena nada en el ordenador. Pon música: si sigue en silencio, comprueba que salga por la salida predeterminada.','The system input is connected but nothing is playing on the computer right now. Play some music: if it stays silent, check that it comes out of the default output.'],
+ ['El micròfon està connectat però no arriba senyal. Revisa el dispositiu d’entrada i els permisos.','El micrófono está conectado pero no llega señal. Revisa el dispositivo de entrada y los permisos.','The microphone is connected but no signal arrives. Check the input device and the permissions.'],
+ ['Senyal d’àudio recuperat.','Señal de audio recuperada.','Audio signal restored.'],
+ ['Senyal actiu · detecció de pols adaptativa','Señal activa · detección de pulso adaptativa','Signal active · adaptive beat detection'],
+ ['Font connectada · sense senyal audible','Fuente conectada · sin señal audible','Source connected · no audible signal'],
+ ['EN DIRECTE','EN DIRECTO','LIVE'],
+ ['Versió HTML autònoma: no necessita servidor, instal·lació ni connexió per als visuals i els fitxers locals.','Versión HTML autónoma: no necesita servidor, instalación ni conexión para los visuales y los archivos locales.','Standalone HTML version: no server, installation or connection needed for the visuals and local files.'],
+ // Motor d'àudio i gràfic
+ ['Aquest navegador no admet Web Audio.','Este navegador no admite Web Audio.','This browser does not support Web Audio.'],
+ ['El navegador no autoritza la captura des d’aquest context. Obre l’HTML amb Chrome o Edge i revisa els permisos de captura. Pots fer servir fitxers locals i la demo.','El navegador no autoriza la captura desde este contexto. Abre el HTML con Chrome o Edge y revisa los permisos de captura. Puedes usar archivos locales y la demo.','The browser does not allow capture from this context. Open the HTML with Chrome or Edge and check the capture permissions. You can still use local files and the demo.'],
+ ['Aquest navegador no permet accedir a les entrades d’àudio des d’aquest HTML.','Este navegador no permite acceder a las entradas de audio desde este HTML.','This browser does not allow access to audio inputs from this HTML.'],
+ ['La captura de pestanya no està disponible en aquest navegador o context. Prova Chrome/Edge, un fitxer o el micròfon.','La captura de pestaña no está disponible en este navegador o contexto. Prueba Chrome/Edge, un archivo o el micrófono.','Tab capture is not available in this browser or context. Try Chrome/Edge, a file or the microphone.'],
+ ['Has compartit una finestra sense pista de so.','Has compartido una ventana sin pista de sonido.','You shared a window with no audio track.'],
+ ['Has compartit una pantalla sense pista de so.','Has compartido una pantalla sin pista de sonido.','You shared a screen with no audio track.'],
+ ['La captura no inclou cap pista de so.','La captura no incluye ninguna pista de sonido.','The capture includes no audio track.'],
+ [' No s’ha compartit àudio. Torna a triar «Pestanya de Chrome/Edge», selecciona la pestanya que reprodueix música i activa «Comparteix l’àudio». Una finestra pot no oferir so en aquest sistema. Per a tot el so del portàtil (i a Firefox), fes servir «So del sistema».',' No se ha compartido audio. Vuelve a elegir «Pestaña de Chrome/Edge», selecciona la pestaña que reproduce música y activa «Compartir audio». Una ventana puede no ofrecer sonido en este sistema. Para todo el sonido del ordenador (y en Firefox), usa «Sonido del sistema».',' No audio was shared. Choose “Chrome/Edge tab” again, select the tab playing music and enable “Share audio”. A window may not offer sound on this system. For all the computer’s sound (and on Firefox), use “System sound”.'],
+ ['La pista d’àudio compartida està desactivada o acabada. Torna a seleccionar la font.','La pista de audio compartida está desactivada o terminada. Vuelve a seleccionar la fuente.','The shared audio track is disabled or ended. Select the source again.'],
+ ['No trobo cap entrada amb el so del sistema. Chrome amaga els monitors de sortida de Linux: executa una vegada «./So-del-sistema.sh» (a la carpeta de Prisma), que crea l’entrada «Prisma · so del sistema», i torna a prémer el botó. També la pots triar a mà a «Entrada d’àudio».','No encuentro ninguna entrada con el sonido del sistema. Chrome oculta los monitores de salida de Linux: ejecuta una vez «./So-del-sistema.sh» (en la carpeta de Prisma), que crea la entrada «Prisma · so del sistema», y vuelve a pulsar el botón. También puedes elegirla a mano en «Entrada de audio».','No input carrying the system sound was found. Chrome hides Linux output monitors: run “./So-del-sistema.sh” once (in the Prisma folder), which creates the input “Prisma · so del sistema”, then press the button again. You can also pick it by hand under “Audio input”.'],
+ ['Prisma necessita WebGL 2. Activa l’acceleració gràfica o prova un navegador actualitzat.','Prisma necesita WebGL 2. Activa la aceleración gráfica o prueba un navegador actualizado.','Prisma needs WebGL 2. Enable hardware acceleration or try an up-to-date browser.'],
+ ['Error de shader: ','Error de shader: ','Shader error: '],
+ ['Error WebGL: ','Error WebGL: ','WebGL error: '],
+ ['No s’ha pogut crear la memòria gràfica.','No se ha podido crear la memoria gráfica.','The graphics memory could not be created.'],
+ // Universos
+ ['Aurora líquida','Aurora líquida','Liquid aurora'],
+ ['Cintes de llum en moviment','Cintas de luz en movimiento','Ribbons of moving light'],
+ ['Òrbites infinites','Órbitas infinitas','Infinite orbits'],
+ ['Òrbites','Órbitas','Orbits'],
+ ['Simetries que respiren amb els greus','Simetrías que respiran con los graves','Symmetries breathing with the bass'],
+ ['Matèria viva','Materia viva','Living matter'],
+ ['Matèria','Materia','Matter'],
+ ['Un oceà de plasma i color','Un océano de plasma y color','An ocean of plasma and colour'],
+ ['Travessa','Travesía','Crossing'],
+ ['Un túnel cap a un altre lloc','Un túnel hacia otro lugar','A tunnel to somewhere else'],
+ ['Pols estel·lar','Polvo estelar','Stardust'],
+ ['Pols','Polvo','Dust'],
+ ['Constel·lacions en suspensió','Constelaciones en suspensión','Constellations in suspension'],
+ ['Ressonància','Resonancia','Resonance'],
+ ['El traç elèctric del so','El trazo eléctrico del sonido','The electric trace of sound'],
+ ['Jardí de Julia','Jardín de Julia','Julia garden'],
+ ['Zoom infinit · cada forma en conté una còpia exacta','Zoom infinito · cada forma contiene una copia exacta','Infinite zoom · every shape holds an exact copy of itself'],
+ ['Zoom infinit cap al Mandelbrot que viu dins del Mandelbrot','Zoom infinito hacia el Mandelbrot que vive dentro del Mandelbrot','Infinite zoom into the Mandelbrot living inside the Mandelbrot'],
+ ['Gira-sol de Fibonacci','Girasol de Fibonacci','Fibonacci sunflower'],
+ ['Gira-sol','Girasol','Sunflower'],
+ ['Llavors que neixen al centre i s’obren en espirals de 21 i 34','Semillas que nacen en el centro y se abren en espirales de 21 y 34','Seeds born at the centre, opening into 21 and 34 spirals'],
+ ['Quasicristall','Cuasicristal','Quasicrystal'],
+ ['Set ones que interfereixen · cada una és una banda del so','Siete ondas que interfieren · cada una es una banda del sonido','Seven interfering waves · each one is a band of the sound'],
+ ['Harmonògraf','Armonógrafo','Harmonograph'],
+ ['Dos pèndols dibuixen amb llum · el dibuix s’endinsa','Dos péndulos dibujan con luz · el dibujo se adentra','Two pendulums draw with light · the drawing sinks inwards'],
+ ['Paisatge espectral','Paisaje espectral','Spectral landscape'],
+ ['Paisatge','Paisaje','Landscape'],
+ ['Serralada de l’espectre · el so d’ara davant, el passat al fons','Cordillera del espectro · el sonido de ahora delante, el pasado al fondo','A mountain range of the spectrum · the present in front, the past behind'],
+ ['Túnel de Chladni','Túnel de Chladni','Chladni tunnel'],
+ ['Vol a través de plaques de sorra vibrant','Vuelo a través de placas de arena vibrante','A flight through plates of vibrating sand'],
+];
+const LANGUAGES={ca:'Català',es:'Español',en:'English'};
+const tables={es:new Map(),en:new Map()};
+for(const [ca,es,en] of TEXTS){tables.es.set(ca,es);tables.en.set(ca,en)}
+const CATALAN_KEYS=TEXTS.map(row=>row[0]);
+function pickLanguage(){
+ if(typeof document==='undefined')return 'ca';   // proves de Node: català, el text de referència
+ try{const q=new URLSearchParams(globalThis.location?.search||'').get('lang');if(q in LANGUAGES)return q}catch{}
+ try{const saved=globalThis.localStorage?.getItem('prisma-lang');if(saved in LANGUAGES)return saved}catch{}
+ for(const l of globalThis.navigator?.languages||[]){const base=String(l).slice(0,2).toLowerCase();if(base in LANGUAGES)return base}
+ return globalThis.navigator?.languages?'en':'ca';
+}
+let lang=pickLanguage();
+// Separador decimal de l'idioma actiu.
+const DECIMAL=lang==='en'?'.':',';
+function t(ca,vars){
+ let text=lang==='ca'?ca:(tables[lang].get(ca)??ca);
+ if(vars)text=text.replace(/\{(\w+)\}/g,(_,k)=>vars[k]??'');
+ return text;
+}
+// Tradueix els textos fixos de la plantilla (nodes de text i atributs) sense tocar el codi ni els <code>.
+function translatePage(doc){
+ if(doc.documentElement)doc.documentElement.lang=lang;
+ if(lang==='ca')return;
+ doc.title=t(doc.title);
+ const meta=doc.querySelector('meta[name="description"]');if(meta)meta.content=t(meta.content);
+ for(const el of doc.querySelectorAll('[aria-label],[title]'))for(const a of ['aria-label','title'])if(el.hasAttribute(a))el.setAttribute(a,t(el.getAttribute(a)));
+ const walker=doc.createTreeWalker(doc.body,4);const nodes=[];while(walker.nextNode())nodes.push(walker.currentNode);
+ for(const node of nodes){
+  if(node.parentElement?.closest('code,script,style'))continue;
+  const raw=node.nodeValue,key=raw.trim();if(!key)continue;
+  const translated=t(key);if(translated!==key)node.nodeValue=raw.replace(key,translated);
+ }
+}
+// Canviar d'idioma recarrega l'HTML amb ?lang=…: és fiable també des de file://.
+function switchLanguage(next){
+ try{globalThis.localStorage?.setItem('prisma-lang',next)}catch{}
+ const url=new URL(location.href);url.searchParams.set('lang',next);location.href=url.href;
+}
+
+;
+const clamp=(v,a=0,b=1)=>Math.min(b,Math.max(a,v));
+function bandEnergy(data,sampleRate,fftSize,lo,hi){
+ const start=Math.max(1,Math.floor(lo*fftSize/sampleRate)),end=Math.min(data.length,Math.ceil(hi*fftSize/sampleRate));
+ if(end<=start)return 0;let sum=0;for(let i=start;i<end;i++)sum+=(data[i]/255)**2;return Math.sqrt(sum/(end-start));
+}
+class Pulse{
+ constructor(){this.floor=.08;this.fluxFloor=.005;this.last=-10;this.value=0;this.beat=false;this.previous=0}
+ update(energy,time,dt,flux=0,release=.18){
+  const rise=Math.max(0,energy-this.previous);this.previous=energy;
+  const onset=(energy>.035&&energy>this.floor*1.25&&rise>.025)||(flux>.008&&flux>this.fluxFloor*1.6&&energy>.025);
+  this.beat=onset&&time-this.last>.16;
+  if(this.beat){this.last=time;this.value=1}
+  this.floor+=(energy-this.floor)*(1-Math.exp(-dt*1.5));
+  this.fluxFloor+=(flux-this.fluxFloor)*(1-Math.exp(-dt*1.8));
+  this.value*=Math.exp(-dt/Math.max(.06,release));return this.value;
+ }
+}
+class ReactiveEnvelope{
+ constructor(){this.level=.12;this.sustained={bass:0,mid:0,high:0};this.lastRaw={bass:0,mid:0,high:0};this.previous=new Uint8Array(1024);this.bands={bass:0,mid:0,high:0,rms:0,pulse:0};this.pulse=new Pulse()}
+ update(raw,spectrum,time,dt,{sensitivity=1.8,release=.18,normalise=true,bassGain=1,midGain=1,highGain=1,rhythm=.7}={}){
+  const active=raw.rms>.0015;
+  if(active)this.level+=(raw.rms-this.level)*(1-Math.exp(-dt*1.2));
+  const gain=normalise?clamp(.16/Math.max(.012,this.level),.5,10):1;
+  const balance={bass:clamp(bassGain,0,2),mid:clamp(midGain,0,2),high:clamp(highGain,0,2)};
+  const transient={};let onset=0;
+  for(const key of ['bass','mid','high']){
+   const value=active?raw[key]*balance[key]:0;
+   transient[key]=Math.max(0,value-this.sustained[key]);
+   // Les pujades de mitjos/aguts també detecten cops amb un baix sostingut.
+   onset=Math.max(onset,Math.max(0,value-this.lastRaw[key]));
+   this.lastRaw[key]=value;
+   this.sustained[key]+=(value-this.sustained[key])*(1-Math.exp(-dt/.5));
+  }
+  this.bands.pulse=this.pulse.update(onset,time,dt,0,release);
+  for(const key of ['bass','mid','high','rms']){
+   const value=key==='rms'?raw.rms:raw[key]*balance[key]*(1-clamp(rhythm)) + transient[key]*clamp(rhythm)*1.8;
+   const target=active?1-Math.exp(-value*gain*sensitivity*1.25):0;
+   const tau=target>this.bands[key]?.012:release;
+   this.bands[key]+=(target-this.bands[key])*(1-Math.exp(-dt/tau));
+  }
+  this.bands.gain=gain;this.bands.inputRms=raw.rms;return this.bands;
+ }
+}
+const PRESETS=[
+ {name:'Aurora líquida',short:'Aurora',subtitle:'Cintes de llum en moviment'},
+ {name:'Òrbites infinites',short:'Òrbites',subtitle:'Simetries que respiren amb els greus'},
+ {name:'Matèria viva',short:'Matèria',subtitle:'Un oceà de plasma i color'},
+ {name:'Travessa',short:'Travessa',subtitle:'Un túnel cap a un altre lloc'},
+ {name:'Pols estel·lar',short:'Pols',subtitle:'Constel·lacions en suspensió'},
+ {name:'Ressonància',short:'Ressonància',subtitle:'El traç elèctric del so'},
+ {name:'Jardí de Julia',short:'Julia',subtitle:'Zoom infinit · cada forma en conté una còpia exacta'},
+ {name:'Mandelbrot',short:'Mandelbrot',subtitle:'Zoom infinit cap al Mandelbrot que viu dins del Mandelbrot'},
+ {name:'Gira-sol de Fibonacci',short:'Gira-sol',subtitle:'Llavors que neixen al centre i s’obren en espirals de 21 i 34'},
+ {name:'Quasicristall',short:'Quasicristall',subtitle:'Set ones que interfereixen · cada una és una banda del so'},
+ {name:'Harmonògraf',short:'Harmonògraf',subtitle:'Dos pèndols dibuixen amb llum · el dibuix s’endinsa'},
+ {name:'Paisatge espectral',short:'Paisatge',subtitle:'Serralada de l’espectre · el so d’ara davant, el passat al fons'},
+ {name:'Túnel de Chladni',short:'Chladni',subtitle:'Vol a través de plaques de sorra vibrant'},
+];
+
+;
+
+
+// Entrades que porten el so que surt pels altaveus: la font virtual del guió So-del-sistema.sh,
+// els monitors de PulseAudio/PipeWire (Firefox els mostra; Chrome no) i equivalents d'altres sistemes.
+const SYSTEM_INPUT=[[/prisma/i,4],[/^monitor (of|de) (?!virtual)/i,3],[/monitor/i,2],[/stereo mix|mescla est[eè]reo|mezcla est[eé]reo|what u hear|loopback|blackhole|soundflower/i,2]];
+function pickSystemInput(devices){
+ let best=null,score=0;
+ for(const d of devices||[]){if(d.kind!=='audioinput'||!d.label||!d.deviceId||d.deviceId==='default')continue;
+  const s=Math.max(0,...SYSTEM_INPUT.map(([re,v])=>re.test(d.label)?v:0));if(s>score){best=d;score=s}}
+ return best;
+}
+const SYSTEM_MISSING=t('No trobo cap entrada amb el so del sistema. Chrome amaga els monitors de sortida de Linux: executa una vegada «./So-del-sistema.sh» (a la carpeta de Prisma), que crea l’entrada «Prisma · so del sistema», i torna a prémer el botó. També la pots triar a mà a «Entrada d’àudio».');
+const liveKinds=['mic','tab','system'];
+const rawAudio=id=>({audio:{...(id?{deviceId:{exact:id}}:{}),echoCancellation:false,noiseSuppression:false,autoGainControl:false},video:false});
+class AudioEngine{
+ constructor(onEnd=()=>{}){this.context=null;this.element=new Audio();this.element.preload='metadata';this.element.addEventListener('ended',onEnd);this.mode='idle';this.stream=null;this.url=null;this.generation=0;this.demoNodes=new Set();this.pulse=new Pulse();this.envelope=new ReactiveEnvelope();this.bands={bass:0,mid:0,high:0,rms:0,pulse:0};this.disposed=false;this.volume=.65;this.demoStep=0;this.nextNote=0}
+ async init(){if(!this.context){const AC=globalThis.AudioContext||globalThis.webkitAudioContext;if(!AC)throw Error(t('Aquest navegador no admet Web Audio.'));this.context=new AC();this.analyser=this.context.createAnalyser();this.analyser.fftSize=2048;this.analyser.smoothingTimeConstant=.08;this.analyser.minDecibels=-95;this.analyser.maxDecibels=-15;this.output=this.context.createGain();this.output.gain.value=this.volume;this.analyser.connect(this.output);this.output.connect(this.context.destination);this.mediaNode=this.context.createMediaElementSource(this.element);this.freq=new Uint8Array(this.analyser.frequencyBinCount);this.wave=new Uint8Array(this.analyser.fftSize);this.wave.fill(128)}await this.context.resume();}
+ setVolume(v){this.volume=v;this.output?.gain.setTargetAtTime(liveKinds.includes(this.mode)?0:v,this.context.currentTime,.03)}
+ cleanup(){this.generation++;this.element.pause();this.mediaNode?.disconnect();this.streamNode?.disconnect();this.streamNode=null;if(this.stream){for(const t of this.stream.getTracks())t.stop();this.stream=null}clearInterval(this.demoTimer);this.demoTimer=null;for(const n of this.demoNodes){try{n.stop()}catch{}n.disconnect()}this.demoNodes.clear();this.mode='idle';this.pulse=new Pulse();this.envelope=new ReactiveEnvelope()}
+ async file(file){this.cleanup();const token=this.generation;await this.init();if(token!==this.generation)return false;if(this.url)URL.revokeObjectURL(this.url);this.url=URL.createObjectURL(file);this.element.src=this.url;this.mediaNode.connect(this.analyser);this.output.gain.value=this.volume;this.mode='file';try{await this.element.play();if(token!==this.generation)this.element.pause()}catch(e){if(token===this.generation)this.cleanup();throw e}}
+ async live(kind,deviceId=''){
+  this.cleanup();const token=this.generation;let stream;
+  if(!globalThis.isSecureContext)throw Error(t('El navegador no autoritza la captura des d’aquest context. Obre l’HTML amb Chrome o Edge i revisa els permisos de captura. Pots fer servir fitxers locals i la demo.'));
+  try{
+   // Cridar l’API ABANS de qualsevol await preserva el gest real del clic.
+   let request;
+   if(kind==='mic'||kind==='system'){
+    if(!navigator.mediaDevices?.getUserMedia)throw Error(t('Aquest navegador no permet accedir a les entrades d’àudio des d’aquest HTML.'));
+    // Sense cancel·lació d’eco: amb el so del sistema, l’eco a eliminar seria precisament la música.
+    request=kind==='mic'?navigator.mediaDevices.getUserMedia(rawAudio(deviceId)):this.openSystem(deviceId);
+   }else{
+    if(!navigator.mediaDevices?.getDisplayMedia)throw Error(t('La captura de pestanya no està disponible en aquest navegador o context. Prova Chrome/Edge, un fitxer o el micròfon.'));
+    request=navigator.mediaDevices.getDisplayMedia({video:{displaySurface:'browser'},audio:{echoCancellation:false,noiseSuppression:false,autoGainControl:false,suppressLocalAudioPlayback:false},selfBrowserSurface:'exclude',surfaceSwitching:'include',systemAudio:'include',windowAudio:'system'});
+   }
+   // Activa Web Audio també dins del clic, mentre el selector és obert.
+   // Gestionem immediatament el rebuig: el permís pot trigar o cancel·lar-se.
+   const initialized=this.init().then(()=>null,error=>({error}));
+   stream=await request;
+   if(token!==this.generation){stream.getTracks().forEach(t=>t.stop());return false}
+   const tracks=stream.getAudioTracks();
+   if(!tracks.length){
+    const surface=stream.getVideoTracks?.()[0]?.getSettings?.().displaySurface;
+    const detail=surface==='window'?t('Has compartit una finestra sense pista de so.'):surface==='monitor'?t('Has compartit una pantalla sense pista de so.'):t('La captura no inclou cap pista de so.');
+    throw Error(detail+t(' No s’ha compartit àudio. Torna a triar «Pestanya de Chrome/Edge», selecciona la pestanya que reprodueix música i activa «Comparteix l’àudio». Una finestra pot no oferir so en aquest sistema. Per a tot el so del portàtil (i a Firefox), fes servir «So del sistema».'));
+   }
+   if(!tracks.some(t=>t.enabled!==false&&t.readyState!=='ended'))throw Error(t('La pista d’àudio compartida està desactivada o acabada. Torna a seleccionar la font.'));
+   const initialization=await initialized;
+   if(initialization)throw initialization.error;
+   if(token!==this.generation){stream.getTracks().forEach(t=>t.stop());return false}
+   this.output.gain.value=0;
+   this.stream=stream;this.streamNode=this.context.createMediaStreamSource(stream);this.streamNode.connect(this.analyser);
+   this.mode=kind;
+   this.capture={surface:stream.getVideoTracks?.()[0]?.getSettings?.().displaySurface||kind,label:tracks[0].label||'',deviceId:tracks[0].getSettings?.().deviceId||'',muted:tracks.every(t=>t.muted===true)};
+   for(const t of stream.getTracks())t.addEventListener('ended',()=>{if(token===this.generation){this.cleanup();this.onLiveEnd?.()}});
+   return true;
+  }catch(e){if(token===this.generation)this.cleanup();if(stream&&stream!==this.stream)stream.getTracks().forEach(t=>t.stop());throw e}
+ }
+ // Busca l’entrada que porta la sortida del sistema. Sense permís previ les etiquetes són buides:
+ // demanem l’entrada predeterminada per obtenir-les i, si cal, obrim la correcta.
+ async openSystem(deviceId=''){
+  const media=navigator.mediaDevices;
+  if(deviceId)return media.getUserMedia(rawAudio(deviceId));
+  let devices=await media.enumerateDevices?.()||[],found=pickSystemInput(devices);
+  if(found)return media.getUserMedia(rawAudio(found.deviceId));
+  if(devices.some(d=>d.kind==='audioinput'&&d.label))throw Object.assign(Error(SYSTEM_MISSING),{name:'SystemAudioMissing'});
+  const probe=await media.getUserMedia(rawAudio(''));
+  try{
+   found=pickSystemInput(await media.enumerateDevices());
+   const current=probe.getAudioTracks()[0]?.getSettings?.().deviceId;
+   if(found&&found.deviceId===current)return probe;
+   probe.getTracks().forEach(t=>t.stop());
+  }catch(e){probe.getTracks().forEach(t=>t.stop());throw e}
+  if(!found)throw Object.assign(Error(SYSTEM_MISSING),{name:'SystemAudioMissing'});
+  return media.getUserMedia(rawAudio(found.deviceId));
+ }
+ async demo(){this.cleanup();const token=this.generation;await this.init();if(token!==this.generation)return false;this.mode='demo';this.output.gain.value=this.volume;this.demoStep=0;this.nextNote=this.context.currentTime+.04;this.scheduleDemo();this.demoTimer=setInterval(()=>this.scheduleDemo(),80)}
+ scheduleDemo(){if(this.mode!=='demo')return;const ctx=this.context,stepTime=60/108/4;
+  // Si la pestanya s'ha suspès, no intentem reproduir totes les notes perdudes.
+  if(this.nextNote<ctx.currentTime-.5)this.nextNote=ctx.currentTime+.03;
+  while(this.nextNote<ctx.currentTime+.25){const t=this.nextNote,s=this.demoStep++;
+   if(s%4===0)this.note(t,100,.32,'sine',.5,42);
+   if(s%2===0)this.note(t,6000,.035,'triangle',.025,3200);
+   if(s%8===4)this.note(t,190,.1,'triangle',.10,65);
+   const notes=[130.81,155.56,196,233.08,261.63,233.08,196,155.56];
+   if(s%2===0)this.note(t,notes[Math.floor(s/2)%8],.45,'sine',.09);
+   if(s%16===0)this.note(t,65.4,.85,'triangle',.06);
+   this.nextNote+=stepTime;
+  }
+ }
+ note(time,freq,duration,type,volume,end){const o=this.context.createOscillator(),g=this.context.createGain();o.type=type;o.frequency.setValueAtTime(freq,time);if(end)o.frequency.exponentialRampToValueAtTime(end,time+duration);g.gain.setValueAtTime(.0001,time);g.gain.exponentialRampToValueAtTime(volume,time+.006);g.gain.exponentialRampToValueAtTime(.0001,time+duration);o.connect(g);g.connect(this.analyser);o.start(time);o.stop(time+duration+.02);this.demoNodes.add(o);o.onended=()=>{this.demoNodes.delete(o);o.disconnect();g.disconnect()}}
+ async toggle(){if(this.mode==='file'){if(this.element.paused){await this.context.resume();await this.element.play()}else this.element.pause()}else if(this.mode==='demo'){this.cleanup()}else if(liveKinds.includes(this.mode)){this.cleanup()}else await this.demo()}
+ sample(dt,time,options={}){
+  if(!this.context)return this.bands;
+  if(typeof options==='number')options={sensitivity:options};
+  this.analyser.getByteFrequencyData(this.freq);this.analyser.getByteTimeDomainData(this.wave);
+  let sum=0;for(const x of this.wave)sum+=((x-128)/128)**2;const rms=Math.sqrt(sum/this.wave.length);
+  const active=this.mode!=='idle'&&(this.mode!=='file'||!this.element.paused);
+  const raw=active?{bass:bandEnergy(this.freq,this.context.sampleRate,this.analyser.fftSize,35,220),mid:bandEnergy(this.freq,this.context.sampleRate,this.analyser.fftSize,220,2500),high:bandEnergy(this.freq,this.context.sampleRate,this.analyser.fftSize,2500,12000),rms}:{bass:0,mid:0,high:0,rms:0};
+  this.bands=this.envelope.update(raw,this.freq,time,dt,options);return this.bands;
+ }
+ dispose(){this.cleanup();if(this.url)URL.revokeObjectURL(this.url);this.context?.close();this.disposed=true}
+}
+
+;
+
+const vertex=`#version 300 es
+precision highp float;
+out vec2 uv;
+void main(){vec2 p=vec2((gl_VertexID<<1)&2,gl_VertexID&2);uv=p;gl_Position=vec4(p*2.-1.,0,1);}`;
+const fragment=`#version 300 es
+precision highp float;
+in vec2 uv;out vec4 color;
+uniform sampler2D previous;uniform sampler2D waveform;
+uniform vec2 resolution;uniform vec4 audio;uniform float pulse;uniform float time;uniform float dt;uniform float trails;uniform float hue;uniform float blend;uniform float reactivity;uniform int modeA;uniform int modeB;
+uniform sampler2D history;uniform float historyHead;uniform vec4 tone;uniform vec4 motion;uniform float growth;uniform vec3 pen;uniform vec4 spin;uniform float bandAmp[8];uniform float bandPhase[8];
+#define ROWS 128.
+float spectrumAt(float u,float back){return texture(history,vec2(clamp(u,0.,1.),(mod(historyHead-back,ROWS)+.5)/ROWS)).r;}
+#define TAU 6.28318530718
+mat2 rot(float a){return mat2(cos(a),-sin(a),sin(a),cos(a));}
+float hash(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}
+// Hash enter sense patrons: per a gra fi a nivell de píxel.
+float ihash(vec2 p){uvec2 q=uvec2(ivec2(p)+ivec2(1<<20))*uvec2(1597334673u,3812015801u);uint n=(q.x^q.y)*1597334673u;n^=n>>16;n*=2246822519u;n^=n>>13;return float(n)*(1./4294967295.);}
+vec3 palette(float t){return .52+.48*cos(TAU*(t+vec3(.03,.34,.62)+hue));}
+float line(float d,float width){return exp(-abs(d)/max(width,.0001));}
+vec2 feedbackUV(int mode,vec2 point){
+ vec2 q=point-.5;float stepTime=min(dt,.05)*60.;
+ {
+  float turn=(.003*sin(time*.21)+pulse*.025*reactivity)*stepTime;
+  q=rot(turn)*q;q*=1.-(.0015+.012*audio.x*reactivity)*stepTime;
+  q+=vec2(sin(q.y*9.+time)*.0007,cos(q.x*8.-time)*.0007)*stepTime;
+ }
+ return q+.5;
+}
+vec3 pattern(int mode,vec2 p){
+ float b=audio.x*reactivity,m=audio.y*reactivity,h=audio.z*reactivity,k=pulse*reactivity;
+ if(mode<=5){
+  p=rot(.10*m*sin(time*.7)+.16*k)*p; p/=1.+.28*b+.22*k;
+  p+=vec2(sin(p.y*4.+time)*.12*m,cos(p.x*3.-time)*.1*h);
+ }
+ float t=time*.32,r=length(p),a=atan(p.y,p.x);vec3 c=vec3(0.);
+ if(mode==0){
+  p*=rot(.15*sin(t*.22));
+  for(int i=0;i<6;i++){float f=float(i);float y=p.y+(.23+.32*b)*sin(p.x*(1.5+.7*m)+t*.6+f*.65)+(.14+.18*m)*sin(p.x*3.2-t*.7+f*.9)+.06*sin(p.x*7.+t+f);float d=y+(f-2.5)*.125;float w=.012+.018*b;
+   c+=palette(.11*f+t*.025)*line(d,w)*(.48+b*.5);c+=palette(.1*f+.14)*line(d,w*5.)*.055;
+  }c+=palette(r*.2-t*.04)*.025/(.2+r);
+ }else if(mode==1){
+  float s=sin(a*6.+sin(t)*2.+r*8.-t*2.);float petals=abs(r-(.44+.16*s+.20*b+.12*k));c=palette(a/TAU+t*.04)*line(petals,.012+.012*b);c+=palette(.3+t*.05)*line(r-.19-.035*sin(a*12.+t),.009);c+=palette(.7+r)*line(sin(r*24.-t*3.+sin(a*8.)*.6),.07)*exp(-r*1.8)*.36;c*=.6+b*.8;
+ }else if(mode==2){
+  vec2 q=p;for(int i=0;i<5;i++){float f=float(i)+1.;q+=vec2(sin(q.y*2.+t/f+f),cos(q.x*2.-t/f))*(.23+.18*m);}
+  float v=sin(q.x*4.+t)+sin(q.y*5.-t*.8)+sin((q.x+q.y)*4.+t*.4);c=palette(v*.12+t*.025)*(.15+pow(abs(sin(v*2.+r*4.)),7.)*(.55+b*.8));c*=exp(-r*.45);
+ }else if(mode==3){
+  float z=1./max(r,.08);float lanes=abs(sin(a*9.+sin(t*.4)+z*.16));float rings=abs(sin(z*1.7-t*3.-k*1.8-b*.9));c=palette(z*.04+a/TAU+t*.02)*(line(lanes,.035)+line(rings,.035))*(.5+b)*smoothstep(.05,.2,r);c+=palette(t*.1)*exp(-r*11.)*.7;
+ }else if(mode==4){
+  vec2 q=p*rot(t*.07);for(int layer=0;layer<3;layer++){float f=float(layer)+1.;vec2 grid=q*(6.+f*5.);vec2 id=floor(grid),local=fract(grid)-.5;float rnd=hash(id+f*17.);vec2 shift=vec2(sin(rnd*TAU+t/f),cos(rnd*TAU+t/f))*(.24+.22*h);float d=length(local-shift);float sparkle=pow(max(0.,sin(t*(1.+rnd)+rnd*20.)),5.);c+=palette(rnd+f*.2)*exp(-d*d*(100.+f*60.))*(.25+sparkle+b*.6)/f;}
+  c+=palette(p.y*.22+t*.02)*.08*exp(-pow(p.y-.3*sin(p.x*2.+t*.3),2.)*12.);
+ }else if(mode==5){
+  float wave=texture(waveform,vec2(clamp(p.x*.35+.5,0.,1.),.5)).r*2.-1.;
+  for(int i=0;i<5;i++){float f=float(i);float y=sin(p.x*3.+t*1.4+f*.32)*(.14+.15*b)+wave*(.6+audio.w*2.)*(1.+b)+.09*sin(p.x*9.-t+f);float d=p.y-y+(f-2.)*.08;c+=palette(f*.11+t*.02)*line(d,.006+.008*b)*(.45+b);}
+  c+=palette(.3)*line(abs(p.y)-.62,.003)*.08;
+ }
+ return c*(.75+.20*b+.25*k);
+}
+// ---- Modes amb llenguatge propi: cadascun decideix la seva composició (no hereten per índex). ----
+// 0 clàssic amb memòria, 2 directe sense memòria, 5 traç de llum amb zoom (la memòria s'apropa cap a dins).
+int composite(int mode){if(mode<=5)return 0;if(mode==10)return 5;return 2;}
+vec2 cmul(vec2 a,vec2 b){return vec2(a.x*b.x-a.y*b.y,a.x*b.y+a.y*b.x);}
+vec2 cexp(vec2 z){return exp(z.x)*vec2(cos(z.y),sin(z.y));}
+vec2 clog(vec2 z){return vec2(log(length(z)),atan(z.y,z.x));}
+vec2 csqrt(vec2 z){float r=length(z);return vec2(sqrt(.5*(r+z.x)),(z.y<0.?-1.:1.)*sqrt(max(.5*(r-z.x),0.)));}
+vec3 fractalColor(float index,float near,float b,float k){
+ vec3 c=palette(index)*(.2+1.1*near);
+ return c*(.8+.35*b)+vec3(1.,.95,.85)*pow(near,12.)*(.15+.6*k);
+}
+// La música sobre el zoom: cada corba de nivell de l'exterior s'encén amb la seva banda de l'espectre
+// (greus lluny, aguts arran del conjunt) i cada cop envia una onada de llum cap a dins.
+vec3 fractalMusic(float level,float u,float index){
+ float k=pulse*reactivity,since=-.18*log(max(pulse,.002));
+ float eq=smoothstep(.32,.95,spectrumAt(u,0.));
+ float d=abs(fract(level+.5)-.5),fw=max(fwidth(level),1e-4);
+ float contour=1.-smoothstep(fw*.6,fw*1.8,d);              // corba de nivell d'un píxel i mig
+ vec3 c=palette(index+.25)*contour*eq*(.3+1.1*u)*(.6+.5*reactivity);
+ float wave=exp(-pow((u-since*1.25)*14.,2.))*k;
+ return c+mix(palette(index+.5),vec3(1.),.4)*wave*(.1+.8*u)*.8;
+}
+// Jardí de Julia: zoom infinit cap a un punt periòdic repulsiu (cicle de període 2).
+// La funció de Poincaré ψ(Λv)=f²(ψ(v)) fa que el fotograma de la fase 1 sigui exactament el de la fase 0:
+// cada volta del bucle és la mateixa forma, amb una còpia d'ella mateixa a dins.
+const vec2 JC=vec2(-.122,.745);
+vec3 julia(vec2 p,float phase){
+ float b=audio.x*reactivity,h=audio.z*reactivity,k=pulse*reactivity;
+ vec2 d=csqrt(vec2(-3.-4.*JC.x,-4.*JC.y)),z0=.5*(vec2(-1.,0.)+d),z1=cmul(z0,z0)+JC,L=4.*cmul(z0,z1),logL=clog(L);
+ float f=fract(phase);const int N=7;
+ vec2 delta=cmul(p*1.35,cexp(-(f+float(N))*logL)),z=z0;
+ float n=0.;bool out_=false;
+ for(int i=0;i<N;i++){
+  delta=cmul(2.*z0+delta,delta);delta=cmul(2.*z1+delta,delta);n+=2.;
+  if(dot(z0+delta,z0+delta)>256.){out_=true;break;}
+ }
+ z=z0+delta;
+ float trap=10.;
+ if(!out_)for(int i=0;i<150;i++){z=cmul(z,z)+JC;n+=1.;trap=min(trap,abs(length(z)-.6-.1*h));if(dot(z,z)>256.){out_=true;break;}}
+ if(!out_)return palette(.62+.08*sin(time*.2))*(.04+.10*b)+palette(.15)*exp(-trap*30.)*.35*(.3+h+b);
+ float mu=n+1.-log2(max(log2(length(z)),1e-3))-float(2*N)-2.*f;  // la mateixa escala de color a cada volta
+ float near=smoothstep(-2.,24.,mu);
+ return fractalColor(mu*.045+time*.015,near,b,k)*(.03+.97*pow(near,1.4))+fractalMusic(mu*.5,clamp(mu/26.,0.,1.),mu*.045+time*.015);
+}
+// Mandelbrot: zoom cap al minibrot de període 3 (c≈−1,7549, escala 0,01904): quan l'omple, es veu
+// el Mandelbrot inicial i el bucle continua cap al minibrot del minibrot, indefinidament.
+vec3 mandelFrame(vec2 p,float f,out float weight){
+ const float K=.0190355159,C3=-1.75487766625;const vec2 FIX=vec2(-1.78893088864,0.);
+ float scale=pow(K,f);vec2 c=FIX+(vec2(-.62,0.)-FIX)*scale+p*1.22*scale;
+ vec2 z=vec2(0.);float n=0.;bool out_=false;
+ int limit=int(70.+150.*clamp(f+.25,0.,1.));
+ for(int i=0;i<230;i++){if(i>=limit)break;z=cmul(z,z)+c;n+=1.;if(dot(z,z)>1024.){out_=true;break;}}
+ weight=out_?1.:0.;
+ if(!out_)return vec3(0.);
+ float mu=n+1.-log2(log2(length(z)));
+ // Dins del minibrot cada pas «val» tres: el logaritme en base 3 manté els colors en reprendre el bucle.
+ float index=log(max(mu,1.))/log(3.)-f;
+ float rel=mu/pow(3.,f),near=smoothstep(1.,26.,rel);
+ return fractalColor(index*.55+time*.015,near,audio.x*reactivity,pulse*reactivity)*(.03+.97*pow(near,1.4))+fractalMusic(index*6.,clamp(rel/26.,0.,1.),index*.55+time*.015);
+}
+vec3 mandelbrot(vec2 p,float phase){
+ float f=fract(phase),w;vec3 c=mandelFrame(p,f,w);
+ float blendOut=smoothstep(.86,1.,f);
+ if(blendOut>0.){float w2;c=mix(c,mandelFrame(p,f-1.,w2),blendOut);}
+ return c;
+}
+// Gira-sol de Fibonacci: les llavors neixen al centre i s'allunyen. Tot el disc gira amb els cops,
+// l'angle de divergència es desvia de l'angle d'or (les espirals es tornen braços i radis) i cada anell
+// de llavors és una banda de l'espectre: greus al centre, aguts a la vora.
+vec3 sunflower(vec2 p,float growth){
+ float b=audio.x*reactivity,m=audio.y*reactivity,k=pulse*reactivity;
+ const float S=.055;float GOLD=2.39996322973+spin.y;
+ p=rot(spin.x)*p;
+ float a0=dot(p,p)/(S*S),best=1e9,index=0.,bestAge=0.;int J=min(int(2.*sqrt(a0))+4,64);
+ for(int j=-64;j<=64;j++){if(j<-J||j>J)continue;
+  float n=floor(growth-a0)+float(j),age=growth-n;
+  if(age<0.)continue;
+  vec2 seed=S*sqrt(age)*vec2(cos(n*GOLD),sin(n*GOLD));
+  vec2 dv=p-seed;float dd=dot(dv,dv);if(dd<best){best=dd;index=n;bestAge=age;}
+ }
+ float r=S*sqrt(bestAge),since=-.18*log(max(pulse,.002));
+ float wave=exp(-pow((r-since*1.8)/.14,2.))*k;
+ float eq=smoothstep(.3,.95,spectrumAt(r/1.9,r*6.));
+ float size=S*(.27+.25*eq)*smoothstep(0.,5.,bestAge)*(.85+.2*b+.45*wave);
+ float d=sqrt(best),aa=1.5*2./resolution.y,disc=smoothstep(size,size-aa,d);
+ float family=mix(mod(index,21.)/21.,mod(index,34.)/34.,smoothstep(.35,.65,tone.x));
+ vec3 seedColor=mix(vec3(1.,.66,.12),palette(family*.5+r*.15),.35+.3*eq)*(.55+.6*smoothstep(size,0.,d));
+ seedColor*=(.8+.8*eq+.9*wave)*(1.-.35*smoothstep(1.,1.8,length(p)));
+ vec3 ground=vec3(.02,.025,.015)+vec3(.05,.03,0.)*exp(-length(p)*2.)+palette(.1)*.05*m*exp(-length(p)*1.5);
+ return mix(ground,seedColor,disc);
+}
+// Quasicristall: set ones planes a 360°/7 que interfereixen; cada ona és una banda de l'espectre i avança
+// segons la seva energia. La suma es solaritza (efecte Sabattier): els tons alts s'inverteixen i apareixen vores.
+vec3 quasicrystal(vec2 p){
+ float b=audio.x*reactivity,m=audio.y*reactivity,h=audio.z*reactivity,k=pulse*reactivity;
+ float scale=15.*(1.+.18*sin(time*.05))/(1.+.22*b+.12*k),sum=0.,total=0.;
+ for(int i=0;i<7;i++){
+  float a=float(i)*TAU/7.+.04*sin(time*.03),w=.45+1.6*bandAmp[i]*min(reactivity,2.);
+  sum+=w*cos(dot(p,vec2(cos(a),sin(a)))*scale+bandPhase[i]);total+=w;
+ }
+ float L=.5+.5*sum/total;
+ float folds=1.+floor(clamp(b,0.,1.)*2.+.5);              // els greus pleguen més vegades els tons
+ L=fract(L*folds+.07*sin(time*.2));
+ float T=clamp(.55+.2*sin(time*.17)-.2*m-.25*k,.15,.85);
+ float sol=L<T?L/T:(1.-L)/(1.-T);
+ float edge=clamp(length(vec2(dFdx(sol),dFdy(sol)))*resolution.y*.012,0.,1.);
+ vec3 dark=vec3(.01,.01,.03),mid=palette(.82+.15*sin(time*.04)+.2*tone.x)*1.15,light=vec3(1.,.93,.78);
+ vec3 c=mix(dark,mid,smoothstep(.05,.6,sol));c=mix(c,light,smoothstep(.62,1.,sol));
+ c+=vec3(1.,.95,.85)*edge*(.25+.9*h);
+ return c*(1.-.25*smoothstep(1.,2.,length(p)));
+}
+// Harmonògraf de llum: dos pèndols esmorteïts dibuixen sobre fons fosc. La memòria s'amplia lentament
+// cap al centre (zoom cap a dins), i els traços antics s'allunyen i s'apaguen com un túnel de corbes.
+vec2 penAt(float t,float id){
+ float r=hash(vec2(id,4.1));
+ vec2 ratio=r<.2?vec2(2.,3.):r<.4?vec2(3.,4.):r<.6?vec2(1.,2.):r<.8?vec2(3.,5.):vec2(4.,5.);
+ float detune=.004+.012*hash(vec2(id,9.3)),w=TAU*.22,decay=exp(-t*.06);
+ vec2 phase=vec2(hash(vec2(id,1.7)),hash(vec2(id,2.9)))*TAU;
+ vec2 pos=vec2(sin(ratio.x*w*t+phase.x),sin((ratio.y+detune)*w*t+phase.y))*.62;
+ pos+=vec2(sin((ratio.y*w+.03)*t),cos((ratio.y*w+.03)*t))*.14*exp(-t*.09);
+ return pos*(.35+.65*decay)*vec2(1.08,1.);
+}
+vec4 harmonograph(vec2 p){
+ float b=audio.x*reactivity,m=audio.y*reactivity,h=audio.z*reactivity,k=pulse*reactivity;
+ // Zoom cap a dins: la imatge anterior es llegeix més a prop del centre; el greu i el cop l'acceleren.
+ float zoom=.0012+.0035*b+.006*k,stepTime=min(dt,.05)*60.;
+ vec2 q=(uv-.5)*(1.-zoom*stepTime)+.5;q+=(rot(.0015*stepTime)*(uv-.5)-(uv-.5))*.6;
+ vec3 old=texture(previous,q).rgb;
+ vec3 c=max(old*pow(mix(.90,.985,trails),stepTime)-1./255.,0.);
+ float t=pen.x,tPrev=pen.y,id=pen.z;
+ // El so mou el traç: greu i cop l'allunyen, la forma d'ona el fa vibrar, els aguts el fan tremolar.
+ float reach=1.+.4*b+.3*k,grow=1./(1.-zoom*stepTime);
+ // El tros nou comença on el zoom ha deixat el final de l'anterior: el traç no es trenca.
+ float dist=10.;vec2 prev=penAt(tPrev,id)*reach*grow;
+ for(int i=1;i<=14;i++){
+  float s=mix(tPrev,t,float(i)/14.),u=float(i)/14.;vec2 pt=penAt(s,id)*reach;
+  vec2 w=vec2(texture(waveform,vec2(fract(u*.5+time*.37),.5)).r,texture(waveform,vec2(fract(u*.5+time*.37+.5),.5)).r)*2.-1.;
+  pt+=w*(.03+.09*m)+vec2(sin(s*97.),cos(s*83.))*.012*h;
+  vec2 pa=p-prev,ba=pt-prev;float v=clamp(dot(pa,ba)/max(dot(ba,ba),1e-8),0.,1.);
+  dist=min(dist,length(pa-ba*v));prev=pt;
+ }
+ float px=2./resolution.y,width=px*(.6+1.3*b+1.2*k);
+ float core=smoothstep(width+px,width,dist),glow=exp(-dist/(px*(2.5+4.*b)));
+ vec3 ink=mix(pow(palette(.55+.5*tone.x+.13*id+.08*sin(time*.1)),vec3(1.8))*1.6,vec3(1.,.95,.9),.05+.45*k);
+ c+=ink*(core*(.7+.5*b+.9*k)+glow*(.08+.22*b));
+ c+=ink*smoothstep(.004+.012*k,0.,length(p-penAt(t,id)*reach))*(.6+k);   // cap de la ploma
+ return vec4(min(c,vec3(2.)),1.);
+}
+// Túnel de Chladni: plaques vibrants apilades; el vol les travessa i cada placa té la figura del to que sonava.
+const vec3 CHLADNI[12]=vec3[12](vec3(1,2,-1),vec3(1,3,1),vec3(2,3,-1),vec3(1,4,-1),vec3(2,5,1),vec3(3,4,-1),vec3(1,5,1),vec3(3,5,-1),vec3(2,7,1),vec3(4,5,-1),vec3(3,7,1),vec3(5,6,-1));
+vec3 chladniTunnel(vec2 p,float flight){
+ float b=audio.x*reactivity,h=audio.z*reactivity,k=pulse*reactivity,P=3.14159265;
+ vec3 c=vec3(0.);float cover=0.;
+ float px=2./resolution.y;
+ for(int i=0;i<12;i++){
+  float layer=floor(flight)+float(i),z=layer-flight+1.;   // z=0 a la càmera
+  if(z<.08)continue;
+  vec2 q=rot(layer*.37)*p*z*.62;
+  float edge=max(abs(q.x),abs(q.y));if(edge>1.04)continue;
+  int key=int(clamp(floor(hash(vec2(layer,.5))*4.+tone.x*8.),0.,11.));
+  vec3 m=CHLADNI[key];float A=m.x*P,B=m.y*P;
+  float f=cos(A*q.x)*cos(B*q.y)+m.z*cos(B*q.x)*cos(A*q.y);
+  vec2 grad=vec2(-A*sin(A*q.x)*cos(B*q.y)-m.z*B*sin(B*q.x)*cos(A*q.y),-B*cos(A*q.x)*sin(B*q.y)-m.z*A*cos(B*q.x)*sin(A*q.y));
+  float toScreen=1./(z*.62);                      // unitats de placa → unitats de pantalla
+  float dist=abs(f)/max(length(grad),1e-3)*toScreen;
+  float scatter=1.+3.*k*exp(-z*.8);
+  // Línia nodal nítida (antialiàs d'un píxel) i sorra fina al voltant, que el cop escampa.
+  float core=max(.0007,(.0010+.0016*b)*min(toScreen,2.5));
+  float line_=smoothstep(core+px,core,dist);
+  float width=(.0035+.004*b)*scatter*(.6+.4*min(toScreen,2.));
+  vec2 gid=floor(gl_FragCoord.xy)+layer*17.;
+  float grain=max(line_*.9,step(mix(ihash(gid),ihash(gid+floor(time*25.)*7.),clamp(h*.6,0.,.6)),exp(-pow(dist/width,1.5))*.55));
+  float fade=smoothstep(.08,.5,z)*exp(-z*.26);
+  float rim=smoothstep(px*1.2,0.,abs(edge-1.)*toScreen)*.6;
+  vec3 sandColor=mix(vec3(1.,.86,.6),palette(.55+layer*.07),.25+.35*smoothstep(1.,6.,z));
+  float a=max(grain,rim)*fade;
+  c+=(1.-cover)*a*mix(sandColor,vec3(.7,.75,.85),rim*(1.-grain));
+  cover+=(1.-cover)*a*.85;
+ }
+ return c+vec3(.02,.03,.05)*(1.-cover)*exp(-length(p)*3.);
+}
+// Paisatge espectral: cada línia és l'espectre d'un instant; les més noves davant. Línies d'un píxel amb antialiàs.
+vec3 ridges(vec2 p){
+ float aspect=resolution.x/resolution.y,cover=-10.,b=audio.x*reactivity,k=pulse*reactivity,px=2./resolution.y;vec3 c=vec3(0.);
+ for(int i=0;i<56;i++){
+  float f=float(i),z=1.+f*.06,scale=1./z,base=.6-1.42/z,half_=aspect*.88*scale;
+  float u=p.x/(2.*half_)+.5;
+  float v=smoothstep(.30,.97,spectrumAt(u,f*1.5));
+  float edge=smoothstep(0.,.05,u)*smoothstep(1.,.95,u);
+  float calm=.008*sin(u*23.+time*.6+f*.7)+.004*sin(u*57.-time*.9);
+  float y=base+(pow(v,1.4)*.55+calm)*scale*edge*(1.+.25*b);
+  if(p.y<cover)break;
+  if(u>0.&&u<1.){
+   float depth=f/55.,d=abs(p.y-y);
+   vec3 ink=mix(palette(.58+depth*.12),vec3(1.,.93,.82),smoothstep(.45,.95,v));
+   float stroke=smoothstep(px*(1.1+.6*scale),px*.25,d)+.25*exp(-d/(px*3.));
+   c+=ink*stroke*(1.1-depth*.85)*(i==0?1.+.8*k:1.);
+   cover=max(cover,y);
+  }
+ }
+ return c;
+}
+vec4 render(int mode,vec2 p){
+ int kind=composite(mode);
+ vec4 old=texture(previous,uv);
+ if(kind==5)return harmonograph(p);
+ if(kind==2){
+  vec3 c=mode==6?julia(p,motion.x):mode==7?mandelbrot(p,motion.y):mode==8?sunflower(p,growth):mode==9?quasicrystal(p):mode==11?ridges(p):chladniTunnel(p,motion.w);
+  return vec4(c,1.);
+ }
+ vec3 fresh=pattern(mode,p);old=texture(previous,feedbackUV(mode,uv));
+ float retention=pow(mix(.1,.975,trails),dt*60.);retention*=1.-clamp(pulse*reactivity*.18,0.,.45);
+ return vec4(max(max(old.rgb*retention-1./255.,0.),fresh)+fresh*(1.-retention)*.3,1.);
+}
+void main(){vec2 p=(uv-.5)*vec2(resolution.x/resolution.y,1.)*2.;
+ vec4 result=blend>=1.||modeA==modeB?render(modeB,p):mix(render(modeA,p),render(modeB,p),smoothstep(0.,1.,blend));
+ color=vec4(clamp(result.rgb,0.,3.),result.a);
+}`;
+const display=`#version 300 es
+precision highp float;in vec2 uv;out vec4 color;uniform sampler2D image;
+uniform float paper;
+void main(){vec3 c=texture(image,uv).rgb;vec2 p=(uv-.5)*2.;c*=1.-.14*smoothstep(.7,1.6,length(p));vec3 light=pow(1.-exp(-c*1.15),vec3(.88));color=vec4(mix(light,c,paper),1);}  // el paper es mostra tal com és`;
+class VisualEngine{
+ constructor(canvas,options={}){this.fixedSize=options.size;this.canvas=canvas;const gl=this.gl=canvas.getContext('webgl2',{alpha:false,antialias:false,preserveDrawingBuffer:true,powerPreference:'high-performance'});if(!gl)throw Error(t('Prisma necessita WebGL 2. Activa l’acceleració gràfica o prova un navegador actualitzat.'));this.lost=false;this.frames=0;this.waveBytes=new Uint8Array(512);this.targets=[];this.vao=gl.createVertexArray();gl.bindVertexArray(this.vao);this.drawProgram=this.program(vertex,fragment);this.screenProgram=this.program(vertex,display);this.uniforms={};for(const k of ['previous','waveform','resolution','audio','pulse','time','dt','trails','hue','blend','reactivity','modeA','modeB','history','historyHead','tone','motion','growth','pen','spin','bandAmp','bandPhase'])this.uniforms[k]=gl.getUniformLocation(this.drawProgram,k);this.imageUniform=gl.getUniformLocation(this.screenProgram,'image');this.paperUniform=gl.getUniformLocation(this.screenProgram,'paper');this.waveTexture=gl.createTexture();gl.bindTexture(gl.TEXTURE_2D,this.waveTexture);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,gl.LINEAR);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MAG_FILTER,gl.LINEAR);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_S,gl.CLAMP_TO_EDGE);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_T,gl.CLAMP_TO_EDGE);gl.texImage2D(gl.TEXTURE_2D,0,gl.R8,512,1,0,gl.RED,gl.UNSIGNED_BYTE,new Uint8Array(512).fill(128));this.history=new Uint8Array(512*128);this.historyRow=new Uint8Array(512);this.bandAmp=new Float32Array(8);this.bandPhase=new Float32Array(8);this.spin=[0,0,0,0];this.historyHead=0;this.historyClock=0;this.tone=.3;this.motion=[0,.08,0,0];this.growth=1200;this.penTime=0;this.penPrev=0;this.historyTexture=gl.createTexture();gl.bindTexture(gl.TEXTURE_2D,this.historyTexture);for(const [k,v] of [[gl.TEXTURE_MIN_FILTER,gl.LINEAR],[gl.TEXTURE_MAG_FILTER,gl.LINEAR],[gl.TEXTURE_WRAP_S,gl.CLAMP_TO_EDGE],[gl.TEXTURE_WRAP_T,gl.REPEAT]])gl.texParameteri(gl.TEXTURE_2D,k,v);gl.texImage2D(gl.TEXTURE_2D,0,gl.R8,512,128,0,gl.RED,gl.UNSIGNED_BYTE,this.history);canvas.addEventListener('webglcontextlost',e=>{e.preventDefault();this.lost=true;this.onLost?.()});canvas.addEventListener('webglcontextrestored',()=>this.onRestore?.());this.resize(options.size||'auto')}
+ program(vs,fs){const gl=this.gl,shaders=[];for(const [type,source] of [[gl.VERTEX_SHADER,vs],[gl.FRAGMENT_SHADER,fs]]){const s=gl.createShader(type);gl.shaderSource(s,source);gl.compileShader(s);if(!gl.getShaderParameter(s,gl.COMPILE_STATUS))throw Error(t('Error de shader: ')+gl.getShaderInfoLog(s));shaders.push(s)}const p=gl.createProgram();for(const s of shaders)gl.attachShader(p,s);gl.linkProgram(p);if(!gl.getProgramParameter(p,gl.LINK_STATUS))throw Error(t('Error WebGL: ')+gl.getProgramInfoLog(p));for(const s of shaders)gl.deleteShader(s);return p}
+ resize(quality){if(this.lost)return;const gl=this.gl,rect=this.canvas.getBoundingClientRect(),factor=quality==='low'?.65:quality==='high'?Math.min(devicePixelRatio,1.7):Math.min(devicePixelRatio,1.15);const [width,height]=this.fixedSize||[Math.min(1920,Math.max(200,Math.round(rect.width*factor))),Math.max(150,Math.round(rect.height*factor))];if(this.canvas.width===width&&this.canvas.height===height&&this.targets.length)return;this.canvas.width=width;this.canvas.height=height;for(const t of this.targets){gl.deleteTexture(t.texture);gl.deleteFramebuffer(t.framebuffer)}this.targets=[];for(let i=0;i<2;i++){const texture=gl.createTexture();gl.bindTexture(gl.TEXTURE_2D,texture);gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA8,width,height,0,gl.RGBA,gl.UNSIGNED_BYTE,null);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,gl.LINEAR);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MAG_FILTER,gl.LINEAR);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_S,gl.CLAMP_TO_EDGE);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_T,gl.CLAMP_TO_EDGE);const framebuffer=gl.createFramebuffer();gl.bindFramebuffer(gl.FRAMEBUFFER,framebuffer);gl.framebufferTexture2D(gl.FRAMEBUFFER,gl.COLOR_ATTACHMENT0,gl.TEXTURE_2D,texture,0);if(gl.checkFramebufferStatus(gl.FRAMEBUFFER)!==gl.FRAMEBUFFER_COMPLETE)throw Error(t('No s’ha pogut crear la memòria gràfica.'));gl.clearColor(0,0,0,1);gl.clear(gl.COLOR_BUFFER_BIT);this.targets.push({texture,framebuffer})}gl.bindFramebuffer(gl.FRAMEBUFFER,null);this.index=0}
+ // Historial de l'espectre en escala logarítmica (30 Hz–14 kHz) i to dominant suavitzat.
+ listen(dt,audio,spectrum,sampleRate,settings={},time=0){
+  const row=this.historyRow;
+  // 512 bandes logarítmiques; als greus, on hi ha menys línies de la FFT que bandes, s'interpolen.
+  if(spectrum?.length&&sampleRate){const n=spectrum.length,hz=sampleRate/(2*n),ratio=14000/30;let weight=0,sum=0;
+   for(let i=0;i<512;i++){const f0=30*ratio**(i/512)/hz,f1=30*ratio**((i+1)/512)/hz;let m=0;
+    if(f1-f0<1){const x=Math.min(n-2,(f0+f1)/2),j=Math.floor(x),t=x-j;m=spectrum[j]*(1-t)+spectrum[j+1]*t}
+    else for(let j=Math.max(1,Math.floor(f0));j<Math.min(n,Math.ceil(f1));j++)m=Math.max(m,spectrum[j]);
+    row[i]=Math.max(m,row[i]);const e=(m/255)**3;weight+=e;sum+=e*i/511}
+   if(weight>.8)this.tone+=(sum/weight-this.tone)*(1-Math.exp(-dt/1.4));
+  }else row.fill(0);
+  this.history.set(row,this.historyHead*512);this.historyClock+=dt;
+  if(this.historyClock>1/24){this.historyClock%=1/24;this.historyHead=(this.historyHead+1)%128;row.fill(0)}
+  // Vuit bandes per al quasicristall: energia amb atac ràpid i caiguda de 250 ms; la fase avança segons l'energia.
+  for(let k=0;k<8;k++){let e=0;for(let i=k*64;i<k*64+64;i++)e+=row[i];e=Math.min(1,Math.max(0,(e/64/255-.28)/.55));
+   const a=this.bandAmp[k];this.bandAmp[k]=a+(e-a)*(1-Math.exp(-dt/(e>a?.03:.25)));
+   this.bandPhase[k]=(this.bandPhase[k]+dt*(settings.speed??1)*(.25+3.2*this.bandAmp[k])*(k%2?1:-1))%(Math.PI*200)}
+  // Rellotges dels modes amb recorregut propi: el so accelera el viatge, però mai el fa anar enrere.
+  const pace=dt*(settings.speed??1),bass=audio.bass||0,mid=audio.mid||0,m=this.motion;
+  const kick=audio.pulse||0;           // cada cop és una empenta visible cap a dins
+  m[0]+=pace*(.14+.25*bass+.9*kick);   // Julia: voltes del zoom (cada volta ×4,6)
+  m[1]+=pace*(.04+.08*bass+.22*kick);  // Mandelbrot: voltes del zoom cap al minibrot (cada volta ×52)
+  m[2]+=pace*(.055+.09*bass)+((audio.pulse||0)>.9?pace*.08:0);   // Garbell: una pàgina de nombres per volta
+  m[3]+=pace*(.40+1.2*bass);           // Túnel de Chladni: plaques travessades
+  this.growth+=pace*(4+7*bass+8*kick);   // Gira-sol: llavors noves, prou lentes per veure-les néixer
+  this.spin[0]+=pace*(.025+.05*mid+.18*kick);  // gir suau del disc
+  // Desviació molt petita de l'angle d'or: a les llavors exteriors ja es nota molt, així que va a poc a poc.
+  const target=.0009*Math.sin(time*.035)+(this.tone-.42)*.0012;this.spin[1]+=(target-this.spin[1])*(1-Math.exp(-dt/8));
+  this.penPrev=this.penTime;this.penTime+=pace*(.9+1.4*mid+2.2*kick);
+ }
+ clear(){const gl=this.gl;for(const t of this.targets){gl.bindFramebuffer(gl.FRAMEBUFFER,t.framebuffer);gl.clearColor(0,0,0,1);gl.clear(gl.COLOR_BUFFER_BIT)}gl.bindFramebuffer(gl.FRAMEBUFFER,null)}
+ release(){this.gl.getExtension('WEBGL_lose_context')?.loseContext()}
+ frame(time,dt,audio,settings,transition,wave,spectrum,sampleRate){if(this.lost)return;this.listen(dt,audio,spectrum,sampleRate,settings,time);const gl=this.gl;gl.bindVertexArray(this.vao);gl.viewport(0,0,this.canvas.width,this.canvas.height);gl.useProgram(this.drawProgram);const u=this.uniforms;gl.activeTexture(gl.TEXTURE0);gl.bindTexture(gl.TEXTURE_2D,this.targets[this.index].texture);gl.uniform1i(u.previous,0);gl.activeTexture(gl.TEXTURE1);gl.bindTexture(gl.TEXTURE_2D,this.waveTexture);if(wave){const data=this.waveBytes;for(let i=0;i<512;i++)data[i]=wave[Math.floor(i*wave.length/512)];gl.texSubImage2D(gl.TEXTURE_2D,0,0,0,512,1,gl.RED,gl.UNSIGNED_BYTE,data)}gl.uniform1i(u.waveform,1);gl.activeTexture(gl.TEXTURE2);gl.bindTexture(gl.TEXTURE_2D,this.historyTexture);gl.texSubImage2D(gl.TEXTURE_2D,0,0,0,512,128,gl.RED,gl.UNSIGNED_BYTE,this.history);gl.uniform4f(u.spin,...this.spin);gl.uniform1fv(u.bandAmp,this.bandAmp);gl.uniform1fv(u.bandPhase,this.bandPhase);gl.uniform1i(u.history,2);gl.uniform1f(u.historyHead,this.historyHead);gl.uniform4f(u.tone,this.tone,0,0,0);gl.uniform4f(u.motion,...this.motion);gl.uniform1f(u.growth,this.growth);{const cycle=24,id=Math.floor(this.penTime/cycle),t=this.penTime-id*cycle,prev=Math.max(0,this.penPrev-id*cycle);gl.uniform3f(u.pen,t,prev,id)}gl.activeTexture(gl.TEXTURE0);gl.uniform2f(u.resolution,this.canvas.width,this.canvas.height);gl.uniform4f(u.audio,audio.bass,audio.mid,audio.high,audio.rms);gl.uniform1f(u.pulse,audio.pulse);gl.uniform1f(u.time,time);gl.uniform1f(u.dt,Math.min(dt,.05));gl.uniform1f(u.trails,settings.trails);gl.uniform1f(u.hue,settings.hue/360);gl.uniform1f(u.blend,transition.blend);gl.uniform1f(u.reactivity,settings.reactivity??1.4);gl.uniform1i(u.modeA,transition.from);gl.uniform1i(u.modeB,transition.to);const next=1-this.index;gl.bindFramebuffer(gl.FRAMEBUFFER,this.targets[next].framebuffer);gl.drawArrays(gl.TRIANGLES,0,3);gl.bindFramebuffer(gl.FRAMEBUFFER,null);gl.useProgram(this.screenProgram);gl.activeTexture(gl.TEXTURE0);gl.bindTexture(gl.TEXTURE_2D,this.targets[next].texture);gl.uniform1i(this.imageUniform,0);gl.uniform1f(this.paperUniform,0);gl.drawArrays(gl.TRIANGLES,0,3);this.index=next;this.frames++}
+}
+
+;
+
+
+
+
+translatePage(document);
+const $=s=>document.querySelector(s);
+const defaults={sensitivity:1.8,bassGain:1,midGain:1,highGain:1,rhythm:.7,reactivity:1.4,release:.18,normalise:true,trails:.72,speed:1,hue:0,quality:'auto'};
+const settings={...defaults};
+try{const saved=JSON.parse(localStorage.getItem('prisma-settings-v1'));for(const key of ['sensitivity','bassGain','midGain','highGain','rhythm','reactivity','release','trails','speed','hue'])if(Number.isFinite(saved?.[key])){const input=$('#'+key);settings[key]=clamp(saved[key],+input.min,+input.max)}if(typeof saved?.normalise==='boolean')settings.normalise=saved.normalise;if(['auto','low','high'].includes(saved?.quality))settings.quality=saved.quality}catch{}
+const save=()=>{try{localStorage.setItem('prisma-settings-v1',JSON.stringify(settings))}catch{}};
+let visualDirty=true;
+let playlist=[],track=0,preset=0,visual=null,pausedVisual=matchMedia('(prefers-reduced-motion: reduce)').matches,visualTime=0,last=performance.now(),lastPreset=0,transition={from:0,to:0,blend:1,start:0},operation=0;
+const audio=new AudioEngine(()=>{if(track+1<playlist.length)loadTrack(track+1);else{status(t('Fi de la llista. Pots tornar-la a reproduir.'));updateTransport()}});
+function status(text,error=false){$('#status').textContent=text;$('#status').classList.toggle('error',error)}
+function fail(e){const messages={'NotAllowedError':t('Permís denegat o captura cancel·lada. Pots tornar-ho a provar o obrir música.'),'NotFoundError':t('No s’ha trobat cap micròfon disponible.'),'NotReadableError':t('No es pot llegir el dispositiu. Comprova si una altra aplicació l’està utilitzant.'),'AbortError':t('L’operació s’ha interromput. Torna-ho a provar.'),'SystemAudioMissing':'','InvalidStateError':t('La captura necessita un clic amb Prisma en primer pla. Torna a prémer Àudio d’una pestanya.'),'NotSupportedError':t('Aquest format d’àudio no està admès pel navegador.')};status((e.name==='SystemAudioMissing'?'':messages[e.name])||e.message||t('No s’ha pogut obrir la font d’àudio.'),true);updateTransport()}
+function updateTransport(){const mode=audio.mode,playing=mode==='file'?!audio.element.paused:mode!=='idle';$('#play').textContent=playing?'Ⅱ':'▶';$('#play').setAttribute('aria-label',playing?(mode==='file'?t('Pausa'):t('Atura la font d’àudio')):t('Reprodueix'));$('#sourceTag').textContent=({file:t('MÚSICA LOCAL'),mic:t('MICRÒFON EN DIRECTE'),tab:t('PESTANYA EN DIRECTE'),system:t('SO DEL SISTEMA'),demo:t('DEMO SONORA')})[mode]||t('EXPLORACIÓ VISUAL');$('#microphone').setAttribute('aria-pressed',mode==='mic');$('#tabAudio').setAttribute('aria-pressed',mode==='tab');$('#systemAudio').setAttribute('aria-pressed',mode==='system');$('#demo').setAttribute('aria-pressed',mode==='demo');if(mode==='idle'){$('#trackName').textContent=t('Exploració visual');$('#trackDetail').textContent=t('Cap micròfon ni captura d’àudio actius')}$('#seek').disabled=mode!=='file'||!Number.isFinite(audio.element.duration);}
+function selectPreset(index){visualDirty=true;index=(index+PRESETS.length)%PRESETS.length;if(transition.blend<1)transition.from=transition.blend>.5?transition.to:transition.from;else transition.from=preset;preset=index;transition.to=index;transition.start=visualTime;transition.blend=transition.from===index?1:0;lastPreset=visualTime;$('#sceneIndex').textContent=String(index+1).padStart(2,'0')+' / '+String(PRESETS.length).padStart(2,'0');$('#sceneTitle').textContent=t(PRESETS[index].name);$('#sceneSubtitle').textContent=t(PRESETS[index].subtitle);document.querySelectorAll('.preset').forEach((b,i)=>b.setAttribute('aria-pressed',i===index))}
+PRESETS.forEach((p,i)=>{const button=document.createElement('button');button.type='button';button.className='preset';button.setAttribute('aria-label',t(p.name));button.setAttribute('aria-pressed',i===0);const thumb=document.createElement('span');thumb.className='thumb';thumb.setAttribute('aria-hidden','true');const label=document.createElement('span');label.className='label';label.textContent=t(p.short);button.append(thumb,label);button.onclick=()=>selectPreset(i);$('#presets').append(button)});
+async function loadTrack(index){if(!playlist.length)return;const token=++operation;track=index;try{status(t('Obrint {name}…',{name:playlist[index].name}));await audio.file(playlist[index]);if(token!==operation)return;$('#trackName').textContent=playlist[index].name;$('#trackDetail').textContent=t('Fitxer {n} de {total} · processament local',{n:index+1,total:playlist.length});status(t('La música és al teu navegador. No s’ha pujat cap fitxer.'));updateTransport()}catch(e){if(token===operation)fail(e)}}
+function filesChosen(files){const valid=[...files].filter(f=>f.type.startsWith('audio/')||/\.(mp3|wav|ogg|flac|m4a|aac|opus|aiff)$/i.test(f.name));if(!valid.length){status(t('Tria un fitxer d’àudio: MP3, WAV, OGG, FLAC o M4A.'),true);return}playlist=valid;loadTrack(0)}
+$('#open').onclick=()=>$('#file').click();$('#file').onchange=e=>{filesChosen(e.target.files);e.target.value=''};
+const liveText={mic:[t('Accepta el permís del micròfon…'),t('El món al teu voltant'),t('Micròfon connectat. Parla o posa música; no reproduïm l’entrada pels altaveus.')],tab:[t('Tria una pestanya i marca l’opció de compartir-ne l’àudio…'),t('Àudio de la pestanya compartida'),t('Captura connectada. Atura-la amb el mateix botó o des del navegador.')],system:[t('Buscant l’entrada amb el so del sistema… accepta el permís si te’l demana.'),t('So del sistema'),t('So del sistema connectat. Tot el que soni al portàtil mou Prisma; no el tornem a reproduir.')]};
+for(const [id,kind] of [['microphone','mic'],['tabAudio','tab'],['systemAudio','system']])$('#'+id).onclick=async()=>{
+ if(audio.mode===kind){operation++;audio.cleanup();updateTransport();status(t('Captura desconnectada. El micròfon i les pistes compartides s’han alliberat.'));return}
+ const token=++operation;silentSince=0;silentHint=false;$('#'+id).disabled=true;status(liveText[kind][0]);
+ try{const ready=await audio.live(kind,kind==='mic'?$('#audioInput').value:'');if(!ready||token!==operation)return;$('#trackName').textContent=liveText[kind][1];$('#trackDetail').textContent=(kind==='tab'?'':(audio.capture?.label?audio.capture.label+' · ':''))+t('En directe · sense gravar ni desar àudio');status(liveText[kind][2]);updateTransport();if(kind!=='tab'){await refreshInputs();if(audio.capture?.deviceId&&[...$('#audioInput').options].some(o=>o.value===audio.capture.deviceId))$('#audioInput').value=audio.capture.deviceId}}catch(e){if(token===operation)fail(e)}finally{$('#'+id).disabled=false}
+};
+async function refreshInputs(){
+ if(!navigator.mediaDevices?.enumerateDevices)return;
+ try{const selected=$('#audioInput').value,devices=await navigator.mediaDevices.enumerateDevices();
+ const select=$('#audioInput');select.replaceChildren();const option=document.createElement('option');option.value='';option.textContent=t('Entrada predeterminada');select.append(option);
+ for(const [i,device] of devices.filter(d=>d.kind==='audioinput'&&d.deviceId&&d.deviceId!=='default').entries()){const option=document.createElement('option');option.value=device.deviceId;option.textContent=device.label||t('Entrada {n}',{n:i+1});select.append(option)}
+ select.value=selected;if(select.selectedIndex<0)select.value='';
+ }catch{} 
+}
+$('#audioInput').onchange=async()=>{if(!['mic','system'].includes(audio.mode))return;const token=++operation,kind=audio.mode;try{const ready=await audio.live(kind,$('#audioInput').value);if(ready&&token===operation){status(t('Entrada d’àudio connectada.'));updateTransport()}}catch(e){if(token===operation)fail(e)}};
+navigator.mediaDevices?.addEventListener?.('devicechange',refreshInputs);
+$('#demo').onclick=async()=>{++operation;try{if(audio.mode==='demo'){audio.cleanup();status(t('Demo aturada.'))}else{await audio.demo();$('#trackName').textContent=t('Prisma / Circuit nocturn');$('#trackDetail').textContent=t('Demo sintètica original · 108 BPM · bucle');status(t('Demo generada amb Web Audio: greus, percussió i arpegi.'))}updateTransport()}catch(e){fail(e)}};
+$('#play').onclick=async()=>{try{if(audio.mode==='idle'&&playlist.length)await loadTrack(track);else{await audio.toggle();if(audio.mode==='demo'){$('#trackName').textContent=t('Prisma / Circuit nocturn');$('#trackDetail').textContent=t('Demo sintètica original · 108 BPM')}updateTransport()}}catch(e){fail(e)}};
+audio.onLiveEnd=()=>{operation++;status(t('La font ha deixat de compartir àudio.'));updateTransport()};
+for(const event of ['play','pause','loadedmetadata','ended'])audio.element.addEventListener(event,updateTransport);
+audio.element.addEventListener('error',()=>{if(audio.mode==='file'){audio.cleanup();status(t('No s’ha pogut llegir aquest àudio. Prova un altre fitxer o format.'),true);updateTransport()}});
+$('#volume').oninput=e=>audio.setVolume(+e.target.value);
+$('#seek').oninput=e=>{if(audio.mode==='file'&&Number.isFinite(audio.element.duration))audio.element.currentTime=audio.element.duration*(+e.target.value/1000)};
+function syncControls(){for(const key of ['bassGain','midGain','highGain'])$('#'+key+'Value').textContent=settings[key].toFixed(2).replace('.',DECIMAL)+'×';$('#rhythmValue').textContent=Math.round(settings.rhythm*100)+'%';for(const key of Object.keys(settings)){if(key==='normalise')$('#normalise').checked=settings.normalise;else $('#'+key).value=settings[key]};$('#sensitivityValue').textContent=settings.sensitivity.toFixed(1).replace('.',DECIMAL)+'×';$('#speedValue').textContent=settings.speed.toFixed(1).replace('.',DECIMAL)+'×';$('#trailsValue').textContent=Math.round(settings.trails*100)+'%';$('#hueValue').textContent=settings.hue+'°';$('#reactivityValue').textContent=settings.reactivity.toFixed(1).replace('.',DECIMAL)+'×';$('#releaseValue').textContent=Math.round(settings.release*1000)+' ms'}
+for(const key of ['sensitivity','bassGain','midGain','highGain','rhythm','reactivity','release','trails','speed','hue'])$('#'+key).oninput=e=>{settings[key]=+e.target.value;syncControls();save()};$('#hue').addEventListener('change',()=>{if(settings.hue!==thumbHue){thumbHue=settings.hue;renderThumbnails()}});$('#normalise').onchange=e=>{settings.normalise=e.target.checked;save()};$('#quality').onchange=e=>{settings.quality=e.target.value;visual?.resize(settings.quality);save()};$('#reset').onclick=()=>{Object.assign(settings,defaults);syncControls();visual?.resize(settings.quality);save()};syncControls();
+$('#auto').onchange=()=>lastPreset=visualTime;
+$('#fullscreen').onclick=async()=>{try{if(document.fullscreenElement)await document.exitFullscreen();else if($('#stage').requestFullscreen)await $('#stage').requestFullscreen();else document.body.classList.toggle('zen')}catch{document.body.classList.toggle('zen')}};
+$('#zen').onclick=()=>{document.body.classList.toggle('zen');requestAnimationFrame(()=>visual?.resize(settings.quality))};
+$('#capture').onclick=()=>{if(!visual||visual.lost){status(t('El visual encara no està disponible.'),true);return}$('#visual').toBlob(blob=>{if(!blob)return;const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='Prisma-'+t(PRESETS[preset].short)+'-'+Date.now()+'.png';a.click();setTimeout(()=>URL.revokeObjectURL(url),30000)},'image/png')};
+{const select=$('#language');for(const [code,name] of Object.entries(LANGUAGES)){const o=document.createElement('option');o.value=code;o.textContent=name;select.append(o)}select.value=lang;select.onchange=()=>switchLanguage(select.value)}
+$('#help').onclick=()=>$('#helpDialog').showModal();$('#closeHelp').onclick=()=>$('#helpDialog').close();
+function motion(){pausedVisual=!pausedVisual;$('#motion').textContent=pausedVisual?t('Reprèn el visual'):t('Pausa visual')}$('#motion').onclick=motion;if(pausedVisual)$('#motion').textContent=t('Reprèn el visual');
+addEventListener('keydown',e=>{if(['INPUT','SELECT','TEXTAREA','BUTTON'].includes(e.target.tagName)||e.ctrlKey||e.metaKey||e.altKey)return;if(e.key==='Escape'){document.body.classList.remove('zen');visual?.resize(settings.quality)}if($('#helpDialog').open)return;if(e.code==='Space'){e.preventDefault();$('#play').click()}if(e.key==='ArrowRight')selectPreset(preset+1);if(e.key==='ArrowLeft')selectPreset(preset-1);if(e.key.toLowerCase()==='f')$('#fullscreen').click();if(e.key.toLowerCase()==='h')$('#zen').click()});
+let dragDepth=0;for(const event of ['dragenter','dragover','dragleave','drop'])document.addEventListener(event,e=>{e.preventDefault();if(event==='dragenter')dragDepth++;if(event==='dragleave')dragDepth=Math.max(0,dragDepth-1);if(event==='drop'){dragDepth=0;filesChosen(e.dataTransfer.files)}$('#dropHint').hidden=event==='drop'||dragDepth===0});
+function setupVisual(){try{visual=new VisualEngine($('#visual'));visual.resize(settings.quality);visual.onLost=()=>{status(t('S’ha perdut el context gràfic. Esperant que el navegador el recuperi…'),true)};visual.onRestore=()=>{setupVisual();status(t('Context gràfic recuperat.'))};$('#canvasError').hidden=true}catch(e){$('#canvasError').hidden=false;$('#canvasError').textContent=e.message;status(e.message,true)}}setupVisual();
+// Miniatures reals: cada univers es renderitza uns instants en un llenç petit amb un so sintètic.
+let thumbTimer=0;
+function renderThumbnails(){
+ clearTimeout(thumbTimer);
+ let engine;try{engine=new VisualEngine(document.createElement('canvas'),{size:[192,108]})}catch{return}
+ const wave=new Uint8Array(2048).map((_,i)=>128+70*Math.sin(i*.05)),spectrum=new Uint8Array(1024).map((_,i)=>Math.max(0,220-i*.4-60*Math.abs(Math.sin(i*.03))));
+ const fake={bass:.6,mid:.45,high:.35,rms:.25,pulse:.35},buttons=document.querySelectorAll('.preset .thumb');
+ const draw=i=>{
+  if(i>=PRESETS.length||engine.lost){engine.release();return}
+  engine.clear();const look={...settings,speed:1};
+  for(let f=0;f<110;f++)engine.frame(8+f/12,1/12,fake,look,{from:i,to:i,blend:1},wave,spectrum,48000);
+  try{buttons[i].style.background='#000 url('+engine.canvas.toDataURL('image/jpeg',.85)+') center/cover'}catch{}
+  thumbTimer=setTimeout(()=>draw(i+1),30);
+ };
+ thumbTimer=setTimeout(()=>draw(0),400);
+}
+let thumbHue=settings.hue;renderThumbnails();
+const observer=new ResizeObserver(()=>{visual?.resize(settings.quality);visualDirty=true});observer.observe($('#stage'));addEventListener('fullscreenchange',()=>visual?.resize(settings.quality));
+const spectrum=$('#spectrum'),sctx=spectrum.getContext('2d');let silentSince=0,silentHint=false;let fpsFrames=0,fpsStart=performance.now(),lastUI=0;
+function formatTime(seconds){if(!Number.isFinite(seconds))return '00:00';return Math.floor(seconds/60).toString().padStart(2,'0')+':'+Math.floor(seconds%60).toString().padStart(2,'0')}
+function frame(now){requestAnimationFrame(frame);const elapsed=Math.min((now-last)/1000,.1);last=now;if(document.hidden)return;const a=audio.sample(elapsed,now/1000,settings);
+ if(!pausedVisual){visualTime+=elapsed*settings.speed;transition.blend=clamp((visualTime-transition.start)/4);if($('#auto').checked&&visualTime-lastPreset>+$('#interval').value)selectPreset(preset+1);visual?.frame(visualTime,elapsed,a,settings,transition,audio.wave,audio.freq,audio.context?.sampleRate)}else if(visual&&(visual.frames<1||visualDirty)){transition.blend=1;visual.frame(visualTime,.016,a,settings,transition,audio.wave,audio.freq,audio.context?.sampleRate);visualDirty=false}
+ fpsFrames++;if(now-fpsStart>1200){$('#fps').textContent=Math.round(fpsFrames*1000/(now-fpsStart))+' FPS';fpsFrames=0;fpsStart=now}
+ if(['mic','tab','system'].includes(audio.mode)){
+  if((a.inputRms||0)<.0015){if(!silentSince)silentSince=now;if(now-silentSince>4500&&!silentHint){silentHint=true;status(({tab:t('Hi ha una pista compartida però no arriba so. Comprova que la pestanya reprodueixi música, que no estigui silenciada i que hagis compartit l’àudio.'),system:t('L’entrada del sistema està connectada però ara no sona res al portàtil. Posa música: si continua en silenci, comprova que surti per la sortida predeterminada.')})[audio.mode]||t('El micròfon està connectat però no arriba senyal. Revisa el dispositiu d’entrada i els permisos.'))}}else{silentSince=0;if(silentHint){status(t('Senyal d’àudio recuperat.'));silentHint=false}}
+ }
+ if(now-lastUI<80)return;lastUI=now;for(const [id,v] of [['bassMeter',a.bass],['midMeter',a.mid],['highMeter',a.high]])$('#'+id).style.width=Math.round(v*100)+'%';$('#beat').style.opacity=.2+.8*a.pulse;$('#signal').textContent=audio.mode==='idle'?t('Esperant una font d’àudio'):a.rms>.005?t('Senyal actiu · detecció de pols adaptativa'):t('Font connectada · sense senyal audible');
+ if(audio.mode==='file'){$('#clock').textContent=formatTime(audio.element.currentTime)+' / '+formatTime(audio.element.duration);if(document.activeElement!==$('#seek'))$('#seek').value=audio.element.duration?audio.element.currentTime/audio.element.duration*1000:0}else $('#clock').textContent=audio.mode==='idle'?'00:00 / 00:00':t('EN DIRECTE');
+ sctx.clearRect(0,0,spectrum.width,spectrum.height);const bars=48;for(let i=0;i<bars;i++){const bin=Math.floor((i/bars)**2*(audio.freq?.length||1)*.65);const value=audio.mode!=='idle'?(audio.freq?.[bin]||0)/255:0;sctx.fillStyle=i<12?'#c4f56b':i<28?'#72c7ad':'#6787b0';sctx.fillRect(i*spectrum.width/bars,spectrum.height-value*60,spectrum.width/bars-2,Math.max(1,value*60))}
+}
+requestAnimationFrame(frame);document.addEventListener('visibilitychange',()=>last=performance.now());addEventListener('pagehide',()=>{operation++;audio.cleanup()});
+$('#offline').textContent=t('Versió HTML autònoma: no necessita servidor, instal·lació ni connexió per als visuals i els fitxers locals.');
+// API mínima de diagnòstic per a proves; no conté àudio ni dades persistides.
+globalThis.__prisma={get state(){return {mode:audio.mode,preset,frames:visual?.frames||0,webgl:!!visual&&!visual.lost,pausedVisual,bands:{...audio.bands},transition:{...transition}}},selectPreset};
+
+})();
+</script></body></html>
